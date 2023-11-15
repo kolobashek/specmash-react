@@ -1,114 +1,88 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Input } from 'antd'
-import {
-	Form,
-	Link,
-	Outlet,
-	RouterProvider,
-	createBrowserRouter,
-	redirect,
-	useActionData,
-	useFetcher,
-	useLocation,
-	useNavigation,
-	useRouteLoaderData,
-	LoaderFunctionArgs,
-} from 'react-router-dom'
+import { LockOutlined, PhoneOutlined } from '@ant-design/icons'
+import { Button, Checkbox, Form, Input, Space } from 'antd'
+import { Link, redirect, useLocation, useNavigate } from 'react-router-dom'
 import store from '../store'
 import { observer } from 'mobx-react-lite'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const LoginScreen = observer(({ navigation }: any) => {
+const LoginScreen = observer(() => {
+	const location = useLocation()
+	const params = new URLSearchParams(location.search)
+	const from = params.get('from') || '/'
+	const navigate = useNavigate()
+	const { isAuthenticated } = store.auth
+	useEffect(() => {
+		if (isAuthenticated) {
+			navigate(from || '/')
+		}
+	}, [isAuthenticated])
 	const [phone, setPhone] = useState('')
 	const [password, setPassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState('')
-	// const linkTo = useLinkTo()
-
-	useEffect(() => {
-		if (store.auth.isAuthenticated) {
-			// const redirectTo = formData.get('redirectTo') as string | null
-			// return redirect(redirectTo || '/')
-			redirect('/')
-		}
-	}, [store.auth.isAuthenticated])
 
 	const handleLogin = async () => {
 		try {
 			await store.auth.login(phone, password)
+			if (store.auth.isAuthenticated === true) {
+				redirect(from || '/')
+			}
 		} catch (catchedError) {
 			setPassword('')
 			console.log('catchedError', catchedError)
 		}
 	}
 	return (
-		<div>
-			<div>
-				<h1>ВХОД</h1>
-				<Input
-					// errorMessage={''}
-					// errorStyle={{}}
-					// errorProps={{}}
-					// label='Вход:'
-					value={phone}
-					// labelStyle={{}}
-					// labelProps={{}}
-					// leftIcon={<Icon name='phone-outline' size={20} />}
-					// leftIconContainerStyle={{}}
-					// rightIcon={
-					// 	<Icon
-					// 		name='close'
-					// 		color={phone.length ? '#000' : '#ddd'}
-					// 		size={20}
-					// 		onPress={() => setPhone('')}
-					// 		aria-hidden={!phone.length}
-					// 	/>
-					// }
-					// rightIconContainerStyle={{}}
-					placeholder='Введите номер'
-					onChange={(e) => setPhone(e.target.value)}
-					// disabled={loading}
-				/>
-				<label title='Вход:' />
-				<Input
-					// containerStyle={{}}
-					// DisabledInputStyle={{ background: '#ddd' }}
-					// inputContainerStyle={{}}
-					// errorMessage={errorMessage}
-					// errorStyle={{}}
-					// errorProps={{}}
-					// inputStyle={styles.inputStyle}
-					// labelStyle={{}}
-					// labelProps={{}}
-					// leftIconContainerStyle={{}}
-					// rightIcon={
-					// <Icon
-					// name='close'
-					// color={password.length ? '#000' : '#ddd'}
-					// size={20}
-					// style={styles.passIcon}
-					// onPress={() => setPassword('')}
-					// aria-hidden={!password.length}
-					// />
-					// }
-					// rightIconContainerStyle={{}}
-					placeholder='Введите пароль'
-					value={password}
-					onChange={(e) => {
-						setPassword(e.target.value), setErrorMessage('')
-					}}
-					// onSubmitEditing={handleLogin}
-					// secureTextEntry
-					// disabled={loading}
-				/>
-				<Button title='Войти' onClick={handleLogin} disabled={!phone.length || !password.length} />
+		<div style={{ maxWidth: '300px', margin: '0 auto' }}>
+			<h1>ВХОД</h1>
+			<Form
+				name='normal_login'
+				className='login-form'
+				initialValues={{ remember: true }}
+				onFinish={handleLogin}
+			>
+				<Form.Item name='phone' rules={[{ required: true, message: 'Введите номер телефона!' }]}>
+					<Input
+						prefix={<PhoneOutlined className='site-form-item-icon' />}
+						placeholder='Номер телефона'
+						value={phone}
+						onChange={(e) => setPhone(e.target.value)}
+					/>
+				</Form.Item>
+				<Form.Item name='password' rules={[{ required: true, message: 'Введите пароль!' }]}>
+					<Input
+						prefix={<LockOutlined className='site-form-item-icon' />}
+						type='password'
+						placeholder='Пароль'
+						value={password}
+						onChange={(e) => {
+							setPassword(e.target.value), setErrorMessage('')
+						}}
+					/>
+				</Form.Item>
+				<Form.Item>
+					<Form.Item name='remember' valuePropName='checked' noStyle>
+						<Checkbox>Запомнить меня</Checkbox>
+					</Form.Item>
 
-				<Button
-					title='Зарегистрироваться'
-					onClick={() => {
-						navigation.navigate('register')
-					}}
-				/>
-			</div>
+					<a className='login-form-forgot' href=''>
+						Забыли пароль?
+					</a>
+				</Form.Item>
+
+				<Form.Item>
+					<Space>
+						<Button
+							type='primary'
+							htmlType='submit'
+							className='login-form-button'
+							disabled={!phone.length || !password.length}
+						>
+							Войти
+						</Button>
+						или <Link to='/register'>Зарегистрироваться!</Link>
+					</Space>
+				</Form.Item>
+			</Form>
 		</div>
 	)
 })

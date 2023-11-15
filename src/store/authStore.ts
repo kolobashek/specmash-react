@@ -1,14 +1,10 @@
 import { IUser } from './usersStore'
-import { isActive } from './../services/api/user'
 import { makeAutoObservable } from 'mobx'
 import Queries from '../services/api/queries'
 import { graphqlRequest, setAuthTokenHeader } from '../services/api/graphql'
 
 class AuthStore {
 	isAuthenticated = false
-	// declare registrationMessage: string
-	// declare token: string
-	// declare currentUser: IUser
 	registrationMessage = ''
 	token = ''
 	currentUser = {
@@ -26,19 +22,6 @@ class AuthStore {
 	constructor() {
 		makeAutoObservable(this)
 	}
-
-	// getTokenFromAsyncStorage = async () => {
-	// 	const result = await AsyncStorage.getItem('token')
-	// 	if (result) {
-	// 		this.token = result
-	// 		setAuthTokenHeader(result)
-	// 		const currentUser = await graphqlRequest(Queries.me, {}, { token: result })
-	// 		console.log(currentUser)
-	// 		if (currentUser?.me) this.currentUser = currentUser.me
-	// 		return result
-	// 	}
-	// 	return new Error('Токен не найден')
-	// }
 	getUserByToken = async (token: string): Promise<IUser | Error> => {
 		try {
 			setAuthTokenHeader(token)
@@ -46,10 +29,10 @@ class AuthStore {
 			const user = request.me
 			if (user) {
 				this.setCurrentUser(user)
-				this.setisAuthenticated(true)
+				this.setIsAuthenticated(true)
 				return user
 			} else {
-				this.setisAuthenticated(false)
+				this.setIsAuthenticated(false)
 				return new Error('Токен не действителен')
 			}
 		} catch (error) {
@@ -71,10 +54,10 @@ class AuthStore {
 					const user = request.me
 					if (user) {
 						this.setCurrentUser(user)
-						this.setisAuthenticated(true)
+						this.setIsAuthenticated(true)
 						return user
 					} else {
-						this.setisAuthenticated(false)
+						this.setIsAuthenticated(false)
 						return new Error('Токен не действителен')
 					}
 				}
@@ -92,6 +75,7 @@ class AuthStore {
 			})) as Login
 			this.token = login.token
 			this.setCurrentUser(login.user)
+			this.setIsAuthenticated(true)
 			window.localStorage.setItem('token', login.token)
 			return login.user
 		} catch (error) {
@@ -99,7 +83,7 @@ class AuthStore {
 		}
 	}
 
-	setisAuthenticated = (authorized: boolean) => {
+	setIsAuthenticated = (authorized: boolean) => {
 		this.isAuthenticated = authorized
 	}
 
@@ -129,26 +113,12 @@ class AuthStore {
 
 	signOut = () => {
 		window.localStorage.removeItem('token')
-		this.setisAuthenticated(false)
+		this.setIsAuthenticated(false)
 	}
 }
 
 export default new AuthStore()
 
-// interface IUser {
-// 	comment?: string
-// 	id: number
-// 	isActive: boolean
-// 	name?: string
-// 	nickname?: string
-// 	password: string
-// 	phone: string
-// 	roles: IRole[]
-// }
-// interface IRole {
-// 	id: number
-// 	name: string
-// }
 interface UserResponse {
 	me: IUser
 }

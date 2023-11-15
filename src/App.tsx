@@ -67,9 +67,38 @@ const router = createBrowserRouter([
 				Component: RegisterScreen,
 			},
 			{
-				path: 'protected',
+				path: 'users',
 				loader: protectedLoader,
-				Component: ProtectedPage,
+				Component: UsersList,
+				children: [
+					{
+						path: ':id',
+						loader: protectedLoader,
+						Component: UsersList,
+					},
+				],
+			},
+			{
+				path: 'contragents',
+				loader: protectedLoader,
+				Component: ContrAgentsList,
+				children: [
+					{
+						path: ':id',
+						loader: protectedLoader,
+						Component: ContrAgentCard,
+					},
+					{
+						path: ':id/edit',
+						loader: protectedLoader,
+						Component: ContrAgentEdit,
+					},
+					{
+						path: 'new',
+						loader: protectedLoader,
+						Component: ContrAgentNew,
+					},
+				],
 			},
 		],
 	},
@@ -103,6 +132,33 @@ function AppLayout() {
 	const onClose = () => {
 		setOpen(false)
 	}
+	const AuthStatus = () => {
+		// Get our logged in user, if they exist, from the root route loader data
+		// const { user } = useRouteLoaderData('root') as { user: string | null }
+		const fetcher = useFetcher()
+		const { isAuthenticated, currentUser } = store.auth
+		if (!isAuthenticated) {
+			return (
+				<Link to='/login'>
+					<Button type='primary' onClick={onClose}>
+						Войти
+					</Button>
+				</Link>
+			)
+		}
+		const isLoggingOut = fetcher.formData != null
+
+		return (
+			<div>
+				<p>Welcome {currentUser.name}!</p>
+				<fetcher.Form method='post' action='/logout'>
+					<Button type='primary' htmlType='submit' disabled={isLoggingOut}>
+						{isLoggingOut ? 'Signing out...' : 'Sign out'}
+					</Button>
+				</fetcher.Form>
+			</div>
+		)
+	}
 	return (
 		<>
 			<Layout>
@@ -135,43 +191,26 @@ function AppLayout() {
 						</Button>
 					</Space>
 				}
+				footer={<AuthStatus />}
 			>
-				<p>Some contents...</p>
+				{/* <p>Some contents...</p> */}
 				<p>
 					<Link to='/' onClick={onClose}>
-						Public Page
+						Main Page
 					</Link>
 				</p>
 				<p>
-					<Link to='/protected' onClick={onClose}>
-						Protected Page
+					<Link to='/users' onClick={onClose}>
+						Пользователи
 					</Link>
 				</p>
-				<AuthStatus />
+				<p>
+					<Link to='/contragents' onClick={onClose}>
+						Контрагенты
+					</Link>
+				</p>
 			</Drawer>
 		</>
-	)
-}
-
-const AuthStatus = () => {
-	// Get our logged in user, if they exist, from the root route loader data
-	// const { user } = useRouteLoaderData('root') as { user: string | null }
-	const fetcher = useFetcher()
-	const { isAuthenticated, currentUser } = store.auth
-	if (!isAuthenticated) {
-		return <p>You are not logged in.</p>
-	}
-	const isLoggingOut = fetcher.formData != null
-
-	return (
-		<div>
-			<p>Welcome {currentUser.name}!</p>
-			<fetcher.Form method='post' action='/logout'>
-				<Button type='primary' htmlType='submit' disabled={isLoggingOut}>
-					{isLoggingOut ? 'Signing out...' : 'Sign out'}
-				</Button>
-			</fetcher.Form>
-		</div>
 	)
 }
 
@@ -198,10 +237,6 @@ async function protectedLoader({ request }: LoaderFunctionArgs) {
 		return redirect('/login?' + params.toString())
 	}
 	return null
-}
-
-function ProtectedPage() {
-	return <h3>Protected</h3>
 }
 
 const headerStyle: React.CSSProperties = {

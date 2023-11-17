@@ -3,12 +3,13 @@ import store from '../../store'
 import { observer } from 'mobx-react-lite'
 import { localizedRoleName } from '../../utils'
 import { IObject } from '../../store/objectStore'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Card, Divider, FloatButton, Input, List } from 'antd'
 import Title from 'antd/es/typography/Title'
 
 export const ObjectCard = observer(({ navigation }: any) => {
 	const linkTo = useNavigate()
+	const { id } = useParams()
 	const {
 		currentObject,
 		setCurrentObject,
@@ -19,9 +20,7 @@ export const ObjectCard = observer(({ navigation }: any) => {
 		setObjectData,
 		objectData,
 	} = store.objects
-	const objectId = Number(
-		navigation.getState().routes.find((r) => r.name === 'ObjectDetails')?.params?.id
-	)
+	const objectId = Number(id)
 	useEffect(() => {
 		const user = async () => {
 			const input = await getObjectById(objectId)

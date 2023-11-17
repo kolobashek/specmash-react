@@ -3,12 +3,12 @@ import store from '../../store'
 import { observer } from 'mobx-react-lite'
 import { StickyHeader } from '../UIkit'
 import { ObjectCard } from './ObjectCard'
-import { useNavigate } from 'react-router-dom'
+import { redirect, useNavigate } from 'react-router-dom'
 import Link from 'antd/es/typography/Link'
 import { Avatar, Button, FloatButton, Input, List } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 
-export const ObjectsList = observer(({ navigation }: any) => {
+export const ObjectsList = observer(() => {
 	const linkTo = useNavigate()
 	const { list, objectData, setObjectData, createObject, clearObjectData, getObjects } =
 		store.objects
@@ -48,7 +48,7 @@ export const ObjectsList = observer(({ navigation }: any) => {
 				<div>
 					{list.map((object) => {
 						return (
-							<Link href={`/workplaces/objects/${object.id}`} key={object.id}>
+							<Link href={`/objects/${object.id}`} key={object.id}>
 								<List.Item>
 									<Avatar
 										// title={object.name?.charAt(0).toUpperCase()}
@@ -122,13 +122,15 @@ export const ObjectsList = observer(({ navigation }: any) => {
 					)}
 				</div>
 			</div>
-			<FloatButton
+			<Link href={'/objects/new'}>
+				<FloatButton
 				// visible={visibleAddButton}
-				onClick={() => linkTo('/workplaces/objects/new')}
+				// onClick={() => linkTo('/objects/new')}
 				// placement='right'
 				// icon={{ name: 'add', color: 'white' }}
 				// color='green'
-			/>
+				/>
+			</Link>
 		</>
 	)
 })

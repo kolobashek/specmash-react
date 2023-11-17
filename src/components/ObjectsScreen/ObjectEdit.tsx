@@ -7,10 +7,11 @@ import { IObject } from '../../store/objectStore'
 import { ObjectForm } from './ObjectForm'
 import { IContrAgent } from '../../store/contrAgentStore'
 import { FloatButton } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 export const ObjectEdit = observer(({ navigation }: any) => {
 	const linkTo = useNavigate()
+	const { id } = useParams()
 	const {
 		createObject,
 		clearObjectData,
@@ -20,9 +21,7 @@ export const ObjectEdit = observer(({ navigation }: any) => {
 		setCurrentObject,
 		updateObject,
 	} = store.objects
-	const objectId = Number(
-		navigation.getState().routes.find((r) => r.name === 'ObjectEdit')?.params?.id
-	)
+	const objectId = Number(id)
 	console.log(navigation.getState().routes)
 	const [loading, setLoading] = useState(false)
 	const [updateError, setCreateError] = useState('')
@@ -66,20 +65,6 @@ export const ObjectEdit = observer(({ navigation }: any) => {
 	return (
 		<>
 			<ObjectForm objectId={objectId} error={updateError} loading={loading} />
-			<FloatButton
-				// visible={!loading}
-				onClick={createObjectSubmit}
-				// placement='left'
-				// icon={{ name: 'check', color: 'white' }}
-				// color='green'
-			/>
-			<FloatButton
-				// visible={!loading}
-				onClick={cancelHandler}
-				// placement='right'
-				// // icon={{ name: 'cancel', color: 'white' }}
-				// color='red'
-			/>
 		</>
 	)
 })

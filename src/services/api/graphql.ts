@@ -13,10 +13,11 @@ export const graphqlRequest = async (
 	variables?: any,
 	setToken?: { token: string }
 ) => {
+	const token = window.localStorage.getItem('token')
 	try {
 		if (setToken) {
 			setAuthTokenHeader(setToken.token)
-		}
+		} else if (token) setAuthTokenHeader(token)
 		// console.log(query, variables)
 		const response = await client.request(query, variables)
 		return response

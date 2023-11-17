@@ -51,15 +51,7 @@ export const UserNew = observer(() => {
 	if (loading) return <p>Loading...</p>
 	return (
 		<>
-			<UserForm
-				userData={userData}
-				setUserData={setUserData}
-				roles={formattedRoles}
-				error={updateError}
-				loading={loading}
-			/>
-			<FloatButton onClick={createUserSubmit} />
-			<FloatButton onClick={cancelHandler} />
+			<UserForm error={updateError} loading={loading} submitHandler={createUserSubmit} />
 		</>
 	)
 })

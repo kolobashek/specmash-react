@@ -96,7 +96,7 @@ class AuthStore {
 	}
 
 	setCurrentUser = (user: IUser) => {
-		if (user) this.currentUser = user
+		this.currentUser = user
 	}
 
 	hasRoles = (...roleNames: string[]) => {
@@ -114,6 +114,17 @@ class AuthStore {
 	signOut = () => {
 		window.localStorage.removeItem('token')
 		this.setIsAuthenticated(false)
+		this.setCurrentUser({
+			id: 0,
+			phone: '',
+			name: '',
+			roles: [
+				{
+					id: 0,
+					name: '',
+				},
+			],
+		})
 	}
 }
 

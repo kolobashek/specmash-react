@@ -5,6 +5,7 @@ import { ContrAgentForm } from './ContrAgentForm'
 import { IObject } from '../../store/objectStore'
 import { useNavigate } from 'react-router-dom'
 import { FloatButton } from 'antd'
+import { CiCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 
 export const ContrAgentNew = observer(() => {
 	const linkTo = useNavigate()
@@ -13,9 +14,9 @@ export const ContrAgentNew = observer(() => {
 	const [updateError, setCreateError] = useState('')
 
 	const cancelHandler = (e: any) => {
-		linkTo('/workplaces/contragents')
+		linkTo('/contragents')
 	}
-	const createContrAgentSubmit = async (e: any) => {
+	const createContrAgentSubmit = async () => {
 		setLoading(true)
 		const createdContrAgent = await createContrAgent(contrAgentData)
 		if (createdContrAgent instanceof Error) {
@@ -27,14 +28,17 @@ export const ContrAgentNew = observer(() => {
 		clearContrAgentData()
 		setCreateError('')
 		setLoading(false)
-		return linkTo(`/workplaces/contragents/${createdContrAgent.id}`)
+		console.log(createdContrAgent)
+		return linkTo(`/contragents/${createdContrAgent.id}`)
 	}
 	if (loading) return <p>Loading...</p>
 	return (
 		<>
-			<ContrAgentForm error={updateError} loading={loading} />
-			<FloatButton onClick={createContrAgentSubmit} />
-			<FloatButton onClick={cancelHandler} />
+			<ContrAgentForm
+				error={updateError}
+				loading={loading}
+				submitHandler={createContrAgentSubmit}
+			/>
 		</>
 	)
 })

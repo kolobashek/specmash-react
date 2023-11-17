@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
-import { useNavigate, useParams } from 'react-router-dom'
-import { Card, Divider, FloatButton } from 'antd'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Breadcrumb, Card, Divider, FloatButton } from 'antd'
 
 export const UserCard = observer(() => {
+	const title = 'Пользователь'
+	document.title = title
 	const {
 		currentUser,
 		setCurrentUser,
@@ -17,7 +19,7 @@ export const UserCard = observer(() => {
 		userData,
 		roleName,
 	} = store.users
-	const linkTo = useNavigate()
+	const navigate = useNavigate()
 	const { id } = useParams()
 	const userId = Number(id)
 	useEffect(() => {
@@ -26,6 +28,7 @@ export const UserCard = observer(() => {
 			if (input instanceof Error) {
 				return new Error('Unable to fetch user')
 			}
+			document.title = input.name
 			setUserData(input)
 		}
 		user()
@@ -36,7 +39,7 @@ export const UserCard = observer(() => {
 	const [updateError, setUpdateError] = useState('')
 
 	const editUserHandler = () => {
-		linkTo(`/users/${userId}/edit`)
+		navigate(`/users/${userId}/edit`)
 	}
 	// const editUserSubmit = async (id: number) => {
 	// 	setLoading(true)
@@ -54,16 +57,35 @@ export const UserCard = observer(() => {
 	// 	clearUserData()
 	// 	return newUser
 	// }
-	if (!currentUser) return <p>Что-то пошло не так.</p>
+	if (!userData) return <p>Что-то пошло не так.</p>
 	return (
 		<>
-			<Card
-				title={`${currentUser.name}` + (currentUser.nickname ? `, ${currentUser.nickname}` : '')}
-			>
+			<Breadcrumb
+				separator='>'
+				itemRender={(route, params, items, paths) => {
+					const last = items.indexOf(route) === items.length - 1
+					return last || !route.href ? (
+						<span>{route.title}</span>
+					) : (
+						<Link to={route.href}>{route.title}</Link>
+					)
+				}}
+				items={[
+					{
+						title: 'Главная',
+						href: '/',
+					},
+					{
+						title: 'Пользователи',
+						href: '/users',
+					},
+				]}
+			/>
+			<Card title={`${userData.name}` + (userData.nickname ? `, ${userData.nickname}` : '')}>
 				<Divider />
 				<div>
 					<p>Телефон:</p>
-					<p>{`${currentUser.phone}`}</p>
+					<p>{`${userData.phone}`}</p>
 					{/* <ListItem>
 						<ListItem.Title>Роль: </ListItem.Title>
 						<ListItem.Subtitle>{`${roleName(currentUser.role)}`}</ListItem.Subtitle>

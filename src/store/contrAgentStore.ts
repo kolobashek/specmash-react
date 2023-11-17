@@ -52,7 +52,7 @@ class ContrAgentStore {
 		comments,
 		objects,
 	}: IContrAgentData) => {
-		console.log(comments)
+		// console.log(comments)
 		name = name ?? this.contrAgentData.name ?? ''
 		contacts = contacts ?? this.contrAgentData.contacts ?? ''
 		address = address ?? this.contrAgentData.address ?? ''
@@ -61,7 +61,7 @@ class ContrAgentStore {
 
 		this.contrAgentData.name = name
 		this.contrAgentData.contacts = contacts
-		this.contrAgentData.comments = comments
+		this.contrAgentData.address = address
 		this.contrAgentData.comments = comments
 		this.contrAgentData.objects = objects
 	}
@@ -85,7 +85,7 @@ class ContrAgentStore {
 			if (response instanceof Error) {
 				return response
 			}
-			return response.createUser
+			return response.createContrAgent
 		} catch (error) {
 			return new Error(error as string)
 		}
@@ -125,7 +125,7 @@ interface UpdateContrAgentResponse {
 	updateUser: IContrAgent
 }
 interface ICreateContrAgentResponse {
-	createUser: IContrAgent
+	createContrAgent: IContrAgent
 }
 // interface ObjectsResponse {
 // 	objects: IObject[]

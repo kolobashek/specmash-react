@@ -37,7 +37,7 @@ export const ShiftsFilter = observer(() => {
 		}
 	}
 	return (
-		<div style={styles.container}>
+		<div>
 			<p>Filter is here</p>
 		</div>
 	)

@@ -5,24 +5,17 @@ import { StickyHeader } from '../UIkit'
 import { localizedRoleName } from '../../utils'
 import { IContrAgentData } from '../../store/contrAgentStore'
 import { IObject } from '../../store/objectStore'
-import { Button, Checkbox, Divider, Form, Input, Select } from 'antd'
+import { Button, Checkbox, Divider, Form, Input, Select, Space } from 'antd'
 
 type Props = {
 	contrAgentId?: number
 	loading: boolean
 	error: string
+	submitHandler: (values?: any) => void
 }
 
-export const ContrAgentForm = observer(({ contrAgentId, loading, error }: Props) => {
-	const {
-		createContrAgent,
-		clearContrAgentData,
-		setContrAgentData,
-		contrAgentData,
-		getContrAgentById,
-		// setCurrentContrAgent,
-		updateContrAgent,
-	} = store.contrAgents
+export const ContrAgentForm = observer(({ contrAgentId, loading, error, submitHandler }: Props) => {
+	const { setContrAgentData, contrAgentData, getContrAgentById } = store.contrAgents
 	const { getObjects } = store.objects
 	const [allObjects, setAllObjects] = useState([] as IObject[])
 	const { name, contacts, address, comments, objects } = contrAgentData
@@ -34,22 +27,18 @@ export const ContrAgentForm = observer(({ contrAgentId, loading, error }: Props)
 	}
 	useEffect(() => {
 		const start = async () => {
+			if (contrAgentId) {
+				const initialData = await getContrAgentById(contrAgentId)
+				setContrAgentData(initialData)
+			}
 			const objectsFromApi = await getObjects()
 			if (objectsFromApi instanceof Error) {
 				return
 			}
 			setAllObjects(objectsFromApi)
-			if (contrAgentId) {
-				const initialData = await getContrAgentById(contrAgentId)
-				setContrAgentData(initialData)
-			}
 		}
 		start()
 	}, [])
-	console.log(contrAgentData)
-	const onFinish = (values: any) => {
-		console.log('Success:', values)
-	}
 	const onFinishFailed = (errorInfo: any) => {
 		console.log('Failed:', errorInfo)
 	}
@@ -62,63 +51,65 @@ export const ContrAgentForm = observer(({ contrAgentId, loading, error }: Props)
 		}
 	}
 	return (
-		<Form
-			name='contrAgent'
-			labelCol={{ span: 8 }}
-			wrapperCol={{ span: 16 }}
-			style={{ maxWidth: 600 }}
-			initialValues={{ remember: true }}
-			onFinish={onFinish}
-			onFinishFailed={onFinishFailed}
-			autoComplete='off'
-		>
-			<Form.Item>
-				{`${contrAgentData.name}` +
-					(contrAgentData.objects?.length
-						? ` //${contrAgentData.objects.map((obj) => obj.name).join(', ')}`
-						: '')}
-			</Form.Item>
-			<Divider />
-			<div>
-				<Form.Item label='Наименование:'>
-					<Input
-						placeholder={contrAgentData.name || 'Наименование'}
-						value={name}
-						onChange={(e) => inputChange({ name: e.target.value })}
-						disabled={loading}
-					/>
+		<div style={{ maxWidth: '600px', margin: '0 auto' }}>
+			<Form
+				name='contrAgent'
+				// labelCol={{ span: 8 }}
+				// wrapperCol={{ span: 16 }}
+				style={{ maxWidth: 600 }}
+				initialValues={{ remember: true }}
+				onFinish={submitHandler}
+				onFinishFailed={onFinishFailed}
+				autoComplete='off'
+			>
+				<h1>Контрагент</h1>
+				<Form.Item>
+					{`${contrAgentData.name}` +
+						(contrAgentData.objects?.length
+							? ` //${contrAgentData.objects.map((obj) => obj.name).join(', ')}`
+							: '')}
 				</Form.Item>
-				<Form.Item label='Адрес:'>
-					<Input
-						placeholder='Введите адрес - физический или юридический'
-						value={address}
-						onChange={(e) => inputChange({ address: e.target.value })}
-						disabled={loading}
-						style={{ textAlign: 'left' }}
-					/>
-				</Form.Item>
-				<Form.Item label='Контакты:'>
-					<Input
-						placeholder='телефон, email, ФИО, должность'
-						value={contacts}
-						onChange={(e) => {
-							inputChange({ contacts: e.target.value })
-						}}
-						disabled={loading}
-						style={{ textAlign: 'left' }}
-					/>
-				</Form.Item>
-				<Form.Item label='Тип:'>
-					<Select
-						mode='multiple'
-						// size={size}
-						placeholder='Please select'
-						defaultValue={['a10', 'c12']}
-						onChange={handleChangeObject}
-						style={{ width: '100%' }}
-						options={allObjects}
-					/>
-					{/* <MultiSelect
+				<Divider />
+				<div>
+					<Form.Item label='Наименование:'>
+						<Input
+							placeholder={contrAgentData.name || 'Наименование'}
+							value={name}
+							onChange={(e) => inputChange({ name: e.target.value })}
+							disabled={loading}
+						/>
+					</Form.Item>
+					<Form.Item label='Адрес:'>
+						<Input
+							placeholder='Введите адрес - физический или юридический'
+							value={address}
+							onChange={(e) => inputChange({ address: e.target.value })}
+							disabled={loading}
+							style={{ textAlign: 'left' }}
+						/>
+					</Form.Item>
+					<Form.Item label='Контакты:'>
+						<Input
+							placeholder='телефон, email, ФИО, должность'
+							value={contacts}
+							onChange={(e) => {
+								inputChange({ contacts: e.target.value })
+							}}
+							disabled={loading}
+							style={{ textAlign: 'left' }}
+						/>
+					</Form.Item>
+					<Form.Item label='Объекты:'>
+						<Select
+							mode='multiple'
+							// size={size}
+							placeholder='Please select'
+							// defaultValue={['a10', 'c12']}
+							onChange={handleChangeObject}
+							style={{ width: '100%' }}
+							options={allObjects}
+						/>
+						{/* <MultiSelect
 						style={styles.dropdown}
 						placeholderStyle={styles.placeholderStyle}
 						selectedTextStyle={styles.selectedTextStyle}
@@ -156,26 +147,42 @@ export const ContrAgentForm = observer(({ contrAgentId, loading, error }: Props)
 						}}
 						disable={loading}
 					/> */}
+					</Form.Item>
+					<Form.Item label='Комментарий:'>
+						<Input
+							placeholder={comments || 'Комментарий'}
+							value={comments}
+							onChange={(e) => {
+								inputChange({ comments: e.target.value })
+							}}
+							disabled={loading}
+							style={{ textAlign: 'left' }}
+						/>
+					</Form.Item>
+				</div>
+				{error && (
+					<>
+						<Divider />
+						<p style={{ color: 'red' }}>{error}</p>
+					</>
+				)}
+				<Form.Item>
+					<Space>
+						<Button
+							type='primary'
+							htmlType='submit'
+							className='login-form-button'
+							disabled={!contrAgentData.name.length}
+						>
+							Записать
+						</Button>
+						<Button type='primary' htmlType='reset' className='login-form-button' danger>
+							Отмена
+						</Button>
+					</Space>
 				</Form.Item>
-				<Form.Item label='Комментарий:'>
-					<Input
-						placeholder={comments || 'Комментарий'}
-						value={comments}
-						onChange={(e) => {
-							inputChange({ comments: e.target.value })
-						}}
-						disabled={loading}
-						style={{ textAlign: 'left' }}
-					/>
-				</Form.Item>
-			</div>
-			{error && (
-				<>
-					<Divider />
-					<p style={{ color: 'red' }}>{error}</p>
-				</>
-			)}
-		</Form>
+			</Form>
+		</div>
 	)
 })
 

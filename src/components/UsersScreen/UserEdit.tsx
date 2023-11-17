@@ -9,13 +9,13 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { FloatButton } from 'antd'
 
 export const UserEdit = observer(() => {
+	const { id } = useParams()
+	const userId = Number(id)
 	const rolesFormatter = (roles: string[]) =>
 		roles.map((role) => ({ label: roleName(role), value: role }))
 	const linkTo = useNavigate()
-	const { id } = useParams()
 	const { updateUser, setCurrentUser, setUserData, roles, getRoles, userData, roleName } =
 		store.users
-	const userId = Number(id)
 	const [formattedRoles, setFormattedRoles] = useState(roles)
 	useEffect(() => {
 		const Roles = async () => {
@@ -30,10 +30,7 @@ export const UserEdit = observer(() => {
 	const [loading, setLoading] = useState(false)
 	const [updateError, setCreateError] = useState('')
 
-	const cancelHandler = () => {
-		linkTo(`/users/${userId}`)
-	}
-	const createUserSubmit = async () => {
+	const updateUserSubmit = async () => {
 		setLoading(true)
 		const updatedUser = await updateUser({ ...userData, id: userId })
 		if (updatedUser instanceof Error) {
@@ -50,27 +47,7 @@ export const UserEdit = observer(() => {
 	if (loading) return <p>Loading...</p>
 	return (
 		<>
-			<UserForm
-				userData={userData}
-				setUserData={setUserData}
-				roles={formattedRoles}
-				error={updateError}
-				loading={loading}
-			/>
-			<FloatButton
-				// visible={!loading}
-				onClick={createUserSubmit}
-				// placement='left'
-				// icon={{ name: 'check', color: 'white' }}
-				// color='green'
-			/>
-			<FloatButton
-				// visible={!loading}
-				onClick={cancelHandler}
-				// placement='right'
-				// icon={{ name: 'cancel', color: 'white' }}
-				// color='red'
-			/>
+			<UserForm error={updateError} loading={loading} submitHandler={updateUserSubmit} />
 		</>
 	)
 })

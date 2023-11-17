@@ -39,7 +39,7 @@ export const ShiftForm = observer(({ shiftId, error, loading }: Props) => {
 			try {
 				const cAFromApi = await store.contrAgents.getContrAgents()
 				const objectsFromApi = await store.objects.getObjects()
-				const driversFromApi = await store.users.getUsers({ roles: [{ id: 3, name: 'driver' }] })
+				const driversFromApi = await store.users.getUsers({ roles: [3] })
 				const machinesFromApi = await store.machines.getMachines()
 				if (!(cAFromApi instanceof Error)) {
 					setAllContrAgents(cAFromApi)

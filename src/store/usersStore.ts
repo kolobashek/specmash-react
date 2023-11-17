@@ -66,7 +66,7 @@ class UsersStore {
 		}
 	}
 	setUserData = ({ phone, name, nickname, comment, roles, isActive }: IUserData) => {
-		console.log(comment)
+		// console.log(comment)
 		phone = phone ?? this.userData.phone ?? ''
 		name = name ?? this.userData.name ?? ''
 		nickname = nickname ?? this.userData.nickname ?? ''
@@ -97,7 +97,12 @@ class UsersStore {
 	}
 	createUser = async (userData: IUserData) => {
 		try {
-			const response = (await graphqlRequest(Queries.createUser, userData)) as
+			let payload = { ...userData, roles: [] as number[] }
+			if (userData.roles?.length) {
+				const roles = userData.roles.map((role) => role.id)
+				payload = { ...userData, roles }
+			}
+			const response = (await graphqlRequest(Queries.createUser, payload)) as
 				| ICreateUserResponse
 				| Error
 			if (response instanceof Error) {
@@ -154,14 +159,18 @@ export interface IUserData {
 	roles?: IRole[]
 	isActive?: boolean
 }
-interface IRole {
+export interface IRole {
 	id: number
 	name: string
 }
 interface GetUsersPayload {
 	input: GetUsersPayloadInput
 }
-interface GetUsersPayloadInput extends Partial<IUser> {
+interface GetUsersPayloadInput {
+	id?: number
+	phone?: string
+	name?: string
 	limit?: number
 	offset?: number
+	roles?: number[]
 }

@@ -24,7 +24,7 @@ import React, { useEffect, useState } from 'react'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
 import { ContrAgentCard } from './ContrAgentCard'
-import { useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { Avatar, Button, FloatButton, List } from 'antd'
 import Link from 'antd/es/typography/Link'
 import { UserOutlined } from '@ant-design/icons'
@@ -122,7 +122,7 @@ export const ContrAgentsList = observer(({ navigation }: any) => {
 						dataSource={list}
 						bordered
 						renderItem={(contrAgent) => (
-							<Link href={`/workplaces/contragents/${contrAgent.id}`} key={contrAgent.id}>
+							<Link href={`/contragents/${contrAgent.id}`} key={contrAgent.id}>
 								<List.Item>
 									<Avatar size='small' icon={<UserOutlined />} />
 									<p>{contrAgent.name}</p>
@@ -213,8 +213,9 @@ export const ContrAgentsList = observer(({ navigation }: any) => {
 			</List>
 			<FloatButton
 				// visible={visibleAddButton}
-				onClick={() => navigate('/workplaces/contragents/new')}
+				onClick={() => navigate('/contragents/new')}
 			/>
+			<Outlet />
 		</>
 	)
 })
@@ -269,11 +270,11 @@ export const ContrAgentsList = observer(({ navigation }: any) => {
 // 	},
 // })
 
-const cols = [
-	{ key: 'name', label: 'ФИО' },
-	{ key: 'phone', label: 'Телефон' },
-	{ key: 'nickname', label: 'Псевдоним' },
-	{ key: 'comment', label: 'Комментарий' },
-	{ key: 'role', label: 'Роль' },
-	// { key: 'isActive', label: 'Активен' },
-]
+// const cols = [
+// 	{ key: 'name', label: 'ФИО' },
+// 	{ key: 'phone', label: 'Телефон' },
+// 	{ key: 'nickname', label: 'Псевдоним' },
+// 	{ key: 'comment', label: 'Комментарий' },
+// 	{ key: 'role', label: 'Роль' },
+// 	// { key: 'isActive', label: 'Активен' },
+// ]

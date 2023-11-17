@@ -13,7 +13,7 @@ export const ContrAgentEdit = observer(() => {
 	const [loading, setLoading] = useState(false)
 	const [updateError, setUpdateError] = useState('')
 
-	const createContrAgentSubmit = async () => {
+	const updateContrAgentSubmit = async () => {
 		setLoading(true)
 		const updatedContrAgent = await updateContrAgent({ id: contrAgentId, ...contrAgentData })
 		if (updatedContrAgent instanceof Error) {
@@ -33,9 +33,12 @@ export const ContrAgentEdit = observer(() => {
 	if (loading) return <p>Loading...</p>
 	return (
 		<>
-			<ContrAgentForm contrAgentId={contrAgentId} error={updateError} loading={loading} />
-			<FloatButton onClick={createContrAgentSubmit} />
-			<FloatButton onClick={cancelHandler} />
+			<ContrAgentForm
+				contrAgentId={contrAgentId}
+				error={updateError}
+				loading={loading}
+				submitHandler={updateContrAgentSubmit}
+			/>
 		</>
 	)
 })

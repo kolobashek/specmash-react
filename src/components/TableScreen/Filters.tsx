@@ -4,9 +4,9 @@ import { observer } from 'mobx-react-lite' // импорт observer из mobx-re
 import { IShift } from '../../store/shiftsStore' // импорт интерфейса IShift
 import { StickyHeader } from '../UIkit'
 import { localizedRoleName } from '../../utils'
-import { IObjectData } from '../../store/objectStore'
-import { IObject } from '../../store/objectStore'
-import { IContrAgent } from '../../store/contrAgentStore'
+import { IWorkPlaceData } from '../../store/workPlaceStore'
+import { IWorkPlace } from '../../store/workPlaceStore'
+import { IPartner } from '../../store/partnerStore'
 
 export const ShiftsFilter = observer(() => {
 	// экспорт компонента TableScreen как observer

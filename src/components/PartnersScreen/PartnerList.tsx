@@ -2,7 +2,7 @@
 // import { observer } from 'mobx-react-lite'
 // import store from '../../store'
 
-// export const ContragentsScreen = observer(() => {
+// export const PartnersScreen = observer(() => {
 // 	return (
 // 		<div>
 // 			<p>
@@ -23,51 +23,45 @@
 import React, { useEffect, useState } from 'react'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
-import { ContrAgentCard } from './ContrAgentCard'
+import { PartnerCard } from './PartnerCard'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { Avatar, Button, FloatButton, List } from 'antd'
 import Link from 'antd/es/typography/Link'
 import { UserOutlined } from '@ant-design/icons'
 
-export const ContrAgentsList = observer(({ navigation }: any) => {
+export const PartnersList = observer(({ navigation }: any) => {
 	const navigate = useNavigate()
-	const {
-		list,
-		contrAgentData,
-		setContrAgentData,
-		createContrAgent,
-		clearContrAgentData,
-		getContrAgents,
-	} = store.contrAgents
+	const { list, partnerData, setPartnerData, createPartner, clearPartnerData, getPartners } =
+		store.partners
 	useEffect(() => {
-		getContrAgents()
+		getPartners()
 	}, [])
 
 	const [visibleAddButton, setVisibleAddButton] = useState(true)
 	const [loading, setLoading] = useState(false)
 	const [isVisibleBS, setIsVisibleBS] = useState(false)
 	const [isActive, setIsActive] = useState(false)
-	const addContrAgentHandler = async () => {
+	const addPartnerHandler = async () => {
 		setVisibleAddButton(false)
 	}
-	const addContrAgentSubmit = async () => {
+	const addPartnerSubmit = async () => {
 		setLoading(true)
-		const newDriver = await createContrAgent(contrAgentData)
+		const newDriver = await createPartner(partnerData)
 		if (newDriver instanceof Error) {
 			console.log(newDriver)
 			setLoading(false)
 		}
 		setVisibleAddButton(true)
 		setLoading(false)
-		clearContrAgentData()
-		getContrAgents()
+		clearPartnerData()
+		getPartners()
 	}
 	const cancelHandler = () => {
 		setVisibleAddButton(true)
 	}
 	const isActiveHandler = () => {
 		setIsActive(!isActive)
-		// setContrAgentInput({ isActive: !isActive })
+		// setPartnerInput({ isActive: !isActive })
 	}
 	// const memoizedRoleName = React.useMemo(() => {
 	// 	return (role: string | undefined) => {
@@ -106,14 +100,14 @@ export const ContrAgentsList = observer(({ navigation }: any) => {
 			<List>
 				{/* <StickyHeader titles={cols} /> */}
 				<div>
-					{/* {list.map((contrAgent) => {
+					{/* {list.map((partner) => {
 						return (
-							<Link href={`/workplaces/contragents/${contrAgent.id}`} key={contrAgent.id}>
+							<Link href={`/workplaces/contragents/${partner.id}`} key={partner.id}>
 								<Avatar size='small' icon={<UserOutlined />} />
 								<List.Item>
-									<ListItem.Title>{contrAgent.name}</ListItem.Title>
-									<ListItem.Subtitle>{contrAgent.address}</ListItem.Subtitle>
-									<ListItem.Subtitle>{contrAgent.contacts}</ListItem.Subtitle>
+									<ListItem.Title>{partner.name}</ListItem.Title>
+									<ListItem.Subtitle>{partner.address}</ListItem.Subtitle>
+									<ListItem.Subtitle>{partner.contacts}</ListItem.Subtitle>
 								</List.Item>
 							</Link>
 						)
@@ -121,13 +115,13 @@ export const ContrAgentsList = observer(({ navigation }: any) => {
 					<List
 						dataSource={list}
 						bordered
-						renderItem={(contrAgent) => (
-							<Link href={`/contragents/${contrAgent.id}`} key={contrAgent.id}>
+						renderItem={(partner) => (
+							<Link href={`/contragents/${partner.id}`} key={partner.id}>
 								<List.Item>
 									<Avatar size='small' icon={<UserOutlined />} />
-									<p>{contrAgent.name}</p>
-									<p>{contrAgent.address}</p>
-									<p>{contrAgent.contacts}</p>
+									<p>{partner.name}</p>
+									<p>{partner.address}</p>
+									<p>{partner.contacts}</p>
 								</List.Item>
 							</Link>
 						)}
@@ -138,18 +132,18 @@ export const ContrAgentsList = observer(({ navigation }: any) => {
 								{/* <div style={styles.inputsCell}>
 									<Input
 										placeholder='Наименование'
-										value={contrAgentData.name}
-										onChangeText={(e) => setContrAgentData({ name: e })}
+										value={partnerData.name}
+										onChangeText={(e) => setPartnerData({ name: e })}
 										disabled={loading}
 									/>
 								</div>
 								<div style={styles.inputsCell}>
 									<Input
 										placeholder='Контакты'
-										value={contrAgentData.contacts}
+										value={partnerData.contacts}
 										onChangeText={(e) => {
 											console.log(e)
-											setContrAgentData({ contacts: e })
+											setPartnerData({ contacts: e })
 										}}
 										disabled={loading}
 									/>
@@ -157,22 +151,22 @@ export const ContrAgentsList = observer(({ navigation }: any) => {
 								<div style={styles.inputsCell}>
 									<Input
 										placeholder='Адрес'
-										value={contrAgentData.address}
-										onChangeText={(e) => setContrAgentData({ address: e })}
+										value={partnerData.address}
+										onChangeText={(e) => setPartnerData({ address: e })}
 										disabled={loading}
 									/>
 								</div> */}
 								{/* <div style={styles.inputsCell}>
 									<Input
 										placeholder='Комментарий'
-										value={contrAgentData.comment}
-										onChangeText={(e) => setContrAgentData({ comment: e })}
+										value={partnerData.comment}
+										onChangeText={(e) => setPartnerData({ comment: e })}
 										disabled={loading}
 									/>
 								</div> */}
 								{/* <div style={styles.inputsCell}> */}
 								{/* <Button
-										title={contrAgentInput.role || 'Роль'}
+										title={partnerInput.role || 'Роль'}
 										onPress={() => setIsVisibleBS(true)}
 										disabled={loading}
 									/> */}
@@ -201,8 +195,8 @@ export const ContrAgentsList = observer(({ navigation }: any) => {
 								<Button
 									// style={styles.row}
 									color={'green'}
-									disabled={!contrAgentData.name || loading}
-									onClick={addContrAgentSubmit}
+									disabled={!partnerData.name || loading}
+									onClick={addPartnerSubmit}
 									loading={loading}
 								/>
 								<Button color={'red'} onClick={cancelHandler} disabled={loading} />

@@ -5,7 +5,7 @@ import { StickyHeader } from '../UIkit'
 import { localizedRoleName } from '../../utils'
 import { IShift } from '../../store/shiftsStore'
 import { ShiftForm } from './ShiftForm'
-import { IContrAgent } from '../../store/contrAgentStore'
+import { IPartner } from '../../store/partnerStore'
 import { useNavigate, useParams } from 'react-router-dom'
 import { FloatButton } from 'antd'
 
@@ -24,8 +24,8 @@ export const ShiftEdit = observer(() => {
 	const linkTo = useNavigate()
 	const [loading, setLoading] = useState(false)
 	const [updateError, setCreateError] = useState('')
-	const [allContAgents, setAllContAgents] = useState([] as IContrAgent[])
-	const { getContrAgents } = store.contrAgents
+	const [allContAgents, setAllContAgents] = useState([] as IPartner[])
+	const { getPartners } = store.partners
 
 	useEffect(() => {
 		const start = async () => {
@@ -33,11 +33,11 @@ export const ShiftEdit = observer(() => {
 			if (objFromApi instanceof Error) {
 				return linkTo(`/workplaces/shifts/${shiftId}`)
 			}
-			const contrAgentsFromApi = await getContrAgents()
-			if (contrAgentsFromApi instanceof Error) {
+			const partnersFromApi = await getPartners()
+			if (partnersFromApi instanceof Error) {
 				return
 			}
-			setAllContAgents(contrAgentsFromApi)
+			setAllContAgents(partnersFromApi)
 			setShiftData(objFromApi)
 		}
 		start()

@@ -7,7 +7,7 @@ export const shifts = {
 					id
 					name
 				}
-				object {
+				workPlace {
 					id
 					name
 				}
@@ -31,7 +31,7 @@ export const shifts = {
 					id
 					name
 				}
-				object {
+				workPlace {
 					id
 					name
 				}
@@ -55,11 +55,11 @@ export const shifts = {
 					id
 					name
 				}
-				object {
+				workPlace {
 					id
 					name
 				}
-				contrAgent {
+				partner {
 					id
 					name
 				}
@@ -83,11 +83,11 @@ export const shifts = {
 					id
 					name
 				}
-				object {
+				workPlace {
 					id
 					name
 				}
-				contrAgent {
+				partner {
 					id
 					name
 				}

@@ -2,32 +2,32 @@ import React, { useEffect, useState } from 'react'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
 import { localizedRoleName } from '../../utils'
-import { IObject } from '../../store/objectStore'
+import { IWorkPlace } from '../../store/workPlaceStore'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Card, Divider, FloatButton, Input, List } from 'antd'
 import Title from 'antd/es/typography/Title'
 
-export const ObjectCard = observer(({ navigation }: any) => {
+export const WorkPlaceCard = observer(({ navigation }: any) => {
 	const linkTo = useNavigate()
 	const { id } = useParams()
 	const {
-		currentObject,
-		setCurrentObject,
-		getObjectById,
-		getObjects,
-		updateObject,
-		clearObjectData,
-		setObjectData,
-		objectData,
-	} = store.objects
-	const objectId = Number(id)
+		currentWorkPlace,
+		setCurrentWorkPlace,
+		getWorkPlaceById,
+		getWorkPlaces,
+		updateWorkPlace,
+		clearWorkPlaceData,
+		setWorkPlaceData,
+		workPlaceData,
+	} = store.workPlaces
+	const workPlaceId = Number(id)
 	useEffect(() => {
 		const user = async () => {
-			const input = await getObjectById(objectId)
+			const input = await getWorkPlaceById(workPlaceId)
 			if (input instanceof Error) {
 				return new Error('Unable to fetch user')
 			}
-			setObjectData(input)
+			setWorkPlaceData(input)
 		}
 		user()
 	}, [])
@@ -38,42 +38,42 @@ export const ObjectCard = observer(({ navigation }: any) => {
 	const [isActive, setIsActive] = useState(false)
 	const [updateError, setUpdateError] = useState('')
 
-	const editObjectHandler = () => {
-		linkTo(`/workplaces/objects/${objectId}/edit`)
+	const editWorkPlaceHandler = () => {
+		linkTo(`/workplaces/workPlaces/${workPlaceId}/edit`)
 	}
-	const editObjectSubmit = async (id: number) => {
+	const editWorkPlaceSubmit = async (id: number) => {
 		setLoading(true)
-		const newObject = await updateObject({ id, ...objectData })
-		if (newObject instanceof Error) {
-			console.log(newObject)
-			setUpdateError(newObject.message)
+		const newWorkPlace = await updateWorkPlace({ id, ...workPlaceData })
+		if (newWorkPlace instanceof Error) {
+			console.log(newWorkPlace)
+			setUpdateError(newWorkPlace.message)
 			setLoading(false)
 			return null
 		}
 		setUpdateError('')
-		setCurrentObject(newObject)
+		setCurrentWorkPlace(newWorkPlace)
 		setVisibleEditButton(true)
 		setLoading(false)
-		clearObjectData()
-		return newObject
+		clearWorkPlaceData()
+		return newWorkPlace
 	}
 	// const isActiveHandler = () => {
 	// 	setIsActive(!isActive)
-	// 	setObjectInput({ isActive: !isActive })
+	// 	setWorkPlaceInput({ isActive: !isActive })
 	// }
-	if (!currentObject) return <p>Что-то пошло не так.</p>
+	if (!currentWorkPlace) return <p>Что-то пошло не так.</p>
 	if (!visibleEditButton)
 		return (
 			<>
-				<Card title={currentObject.name}>
+				<Card title={currentWorkPlace.name}>
 					<Divider />
 					<div>
 						<List.Item>
 							<Title>Контакты:</Title>
 							<Input
 								placeholder='Контакты'
-								value={objectData.contacts}
-								onChange={(text) => setObjectData({ contacts: text.target.value })}
+								value={workPlaceData.contacts}
+								onChange={(text) => setWorkPlaceData({ contacts: text.target.value })}
 								disabled={loading}
 								style={{ textAlign: 'left' }}
 							/>
@@ -95,8 +95,8 @@ export const ObjectCard = observer(({ navigation }: any) => {
 								valueField='value'
 								placeholder='Select item'
 								searchPlaceholder='Search...'
-								value={objectInput.role}
-								onChange={(role) => setObjectInput({ role: role.value })}
+								value={workPlaceInput.role}
+								onChange={(role) => setWorkPlaceInput({ role: role.value })}
 								renderLeftIcon={() => {
 									return <AntDesign style={styles.icon} color='black' name='Safety' size={20} />
 								}}
@@ -104,7 +104,7 @@ export const ObjectCard = observer(({ navigation }: any) => {
 									return (
 										<div style={styles.item}>
 											<p style={styles.textItem}>{item.label}</p>
-											{item.value === objectInput.role && (
+											{item.value === workPlaceInput.role && (
 												<AntDesign style={styles.icon} color='black' name='Safety' size={20} />
 											)}
 										</div>
@@ -115,8 +115,8 @@ export const ObjectCard = observer(({ navigation }: any) => {
 							<Title>Адрес:</Title>
 							<Input
 								placeholder='Адрес'
-								value={objectData.address}
-								onChange={(text) => setObjectData({ address: text.target.value })}
+								value={workPlaceData.address}
+								onChange={(text) => setWorkPlaceData({ address: text.target.value })}
 								disabled={loading}
 								style={{ textAlign: 'left' }}
 							/>
@@ -125,8 +125,8 @@ export const ObjectCard = observer(({ navigation }: any) => {
 							<ListItem.Title>Комментарий:</ListItem.Title>
 							<ListItem.Input
 								placeholder='Комментарии'
-								value={objectInput.comment}
-								onChangeText={(text) => setObjectInput({ comment: text })}
+								value={workPlaceInput.comment}
+								onChangeText={(text) => setWorkPlaceInput({ comment: text })}
 								disabled={loading}
 								style={{ textAlign: 'left' }}
 							/>
@@ -141,14 +141,14 @@ export const ObjectCard = observer(({ navigation }: any) => {
 				</Card>
 				<FloatButton
 					// visible={!visibleEditButton || !loading}
-					onClick={() => editObjectSubmit(objectId)}
+					onClick={() => editWorkPlaceSubmit(workPlaceId)}
 					// placement='left'
 					// icon={{ name: 'check', color: 'white' }}
 					// color='green'
 				/>
 				<FloatButton
 					// visible={!visibleEditButton || !loading}
-					onClick={editObjectHandler}
+					onClick={editWorkPlaceHandler}
 					// placement='right'
 					// icon={{ name: 'cancel', color: 'white' }}
 					// color='red'
@@ -158,28 +158,28 @@ export const ObjectCard = observer(({ navigation }: any) => {
 	return (
 		<>
 			<Card>
-				<Title>{currentObject.name}</Title>
+				<Title>{currentWorkPlace.name}</Title>
 				<Divider />
 				<div>
 					<List.Item>
 						<Title>Контакты:</Title>
-						<p>{currentObject.contacts}</p>
+						<p>{currentWorkPlace.contacts}</p>
 					</List.Item>
 					<List.Item>
 						<Title>Адрес: </Title>
-						<p>{currentObject.address}</p>
+						<p>{currentWorkPlace.address}</p>
 					</List.Item>
 					{/* <ListItem>
 						<ListItem.Title>Комментарий:</ListItem.Title>
 						<ListItem.Subtitle>{`${
-							currentObject.comment ? currentObject.comment : ''
+							currentWorkPlace.comment ? currentWorkPlace.comment : ''
 						}`}</ListItem.Subtitle>
 					</ListItem> */}
 				</div>
 			</Card>
 			<FloatButton
 				// visible={visibleEditButton}
-				onClick={editObjectHandler}
+				onClick={editWorkPlaceHandler}
 				// placement='right'
 				// icon={{ name: 'edit', color: 'white' }}
 				// color='green'

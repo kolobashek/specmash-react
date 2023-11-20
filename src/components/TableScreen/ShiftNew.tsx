@@ -5,7 +5,7 @@ import { StickyHeader } from '../UIkit'
 import { localizedRoleName } from '../../utils'
 import { IShift } from '../../store/shiftsStore'
 import { ShiftForm } from './ShiftForm'
-import { IContrAgent } from '../../store/contrAgentStore'
+import { IPartner } from '../../store/partnerStore'
 import { FloatButton } from 'antd'
 import { useNavigate } from 'react-router-dom'
 

@@ -29,6 +29,7 @@
 		"web-vitals": "^2.1.4"
 	},
 	"devDependencies": {
+		"@babel/plugin-proposal-private-property-in-object": "^7.21.11",
 		"@babel/preset-env": "^7.23.2",
 		"@babel/preset-typescript": "^7.23.2",
 		"@types/jest": "^27.5.2",

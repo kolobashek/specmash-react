@@ -87,7 +87,7 @@ export const ShiftsList = ({ shiftsList }: Props) => {
 // const cols = [
 // 	{ key: 'date', label: 'Дата' },
 // 	{ key: 'shiftNumber', label: 'Смена' },
-// 	{ key: 'object', label: 'Объект' },
+// 	{ key: 'workPlace', label: 'Объект' },
 // 	{ key: 'equipment', label: 'Машина' },
 // 	{ key: 'driver', label: 'Водитель' },
 // 	{ key: 'hours', label: 'Часы работы' },

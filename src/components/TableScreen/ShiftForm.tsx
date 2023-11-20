@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react' // импорт React
 import store from '../../store' // импорт хранилища
 import { observer } from 'mobx-react-lite' // импорт observer из mobx-react-lite
 import { IShift, localPrkDate } from '../../store/shiftsStore' // импорт интерфейса IShift
-import { IObject } from '../../store/objectStore'
-import { IContrAgent } from '../../store/contrAgentStore'
+import { IWorkPlace } from '../../store/workPlaceStore'
+import { IPartner } from '../../store/partnerStore'
 import { IUser } from '../../store/usersStore'
 import _, { max, set } from 'lodash'
 import { IMachine } from '../../store/machinesStore'
@@ -25,10 +25,10 @@ export const ShiftForm = observer(({ shiftId, error, loading }: Props) => {
 		getShiftById,
 	} = store.shifts
 	const [date, setDate] = useState(Date.now() - (Date.now() % 86400000)) // состояние для даты
-	const [allContrAgents, setAllContrAgents] = useState([] as IContrAgent[])
-	const [filteredContrAgents, setFilteredContrAgents] = useState(allContrAgents)
-	const [allObjects, setAllObjects] = useState([] as IObject[])
-	const [filteredObjects, setFilteredObjects] = useState(allObjects)
+	const [allPartners, setAllPartners] = useState([] as IPartner[])
+	const [filteredPartners, setFilteredPartners] = useState(allPartners)
+	const [allWorkPlaces, setAllWorkPlaces] = useState([] as IWorkPlace[])
+	const [filteredWorkPlaces, setFilteredWorkPlaces] = useState(allWorkPlaces)
 	const [allDrivers, setAllDrivers] = useState([] as IUser[])
 	const [filteredDrivers, setFilteredDrivers] = useState(allDrivers)
 	const [allMachines, setAllMachines] = useState([] as IMachine[])
@@ -37,17 +37,17 @@ export const ShiftForm = observer(({ shiftId, error, loading }: Props) => {
 	useEffect(() => {
 		const start = async () => {
 			try {
-				const cAFromApi = await store.contrAgents.getContrAgents()
-				const objectsFromApi = await store.objects.getObjects()
+				const cAFromApi = await store.partners.getPartners()
+				const workPlacesFromApi = await store.workPlaces.getWorkPlaces()
 				const driversFromApi = await store.users.getUsers({ roles: [3] })
 				const machinesFromApi = await store.machines.getMachines()
 				if (!(cAFromApi instanceof Error)) {
-					setAllContrAgents(cAFromApi)
-					setFilteredContrAgents(cAFromApi)
+					setAllPartners(cAFromApi)
+					setFilteredPartners(cAFromApi)
 				}
-				if (!(objectsFromApi instanceof Error)) {
-					setAllObjects(objectsFromApi)
-					setFilteredObjects(objectsFromApi)
+				if (!(workPlacesFromApi instanceof Error)) {
+					setAllWorkPlaces(workPlacesFromApi)
+					setFilteredWorkPlaces(workPlacesFromApi)
 				}
 				if (!(machinesFromApi instanceof Error)) {
 					setAllMachines(machinesFromApi)
@@ -74,29 +74,29 @@ export const ShiftForm = observer(({ shiftId, error, loading }: Props) => {
 		start()
 	}, [])
 	useEffect(() => {
-		const typedId = shiftData.contrAgent
+		const typedId = shiftData.partner
 		if (typedId) {
-			const fObjects = _.filter(allObjects, (obj) => {
-				return _.some(obj.contrAgents, (agent) => {
+			const fWorkPlaces = _.filter(allWorkPlaces, (obj) => {
+				return _.some(obj.partners, (agent) => {
 					return agent.id === typedId.id
 				})
 			})
-			setFilteredObjects(fObjects)
+			setFilteredWorkPlaces(fWorkPlaces)
 		}
-		setFilteredObjects(allObjects)
-	}, [shiftData.contrAgent])
+		setFilteredWorkPlaces(allWorkPlaces)
+	}, [shiftData.partner])
 	useEffect(() => {
-		const typedId = shiftData.object
+		const typedId = shiftData.workPlace
 		if (typedId) {
-			const fContrAgents = _.filter(allContrAgents, (driver) => {
-				return _.some(driver.objects, (obj) => {
+			const fPartners = _.filter(allPartners, (driver) => {
+				return _.some(driver.workPlaces, (obj) => {
 					return obj.id === typedId.id
 				})
 			})
-			setFilteredContrAgents(fContrAgents)
+			setFilteredPartners(fPartners)
 		}
-		setFilteredContrAgents(allContrAgents)
-	}, [shiftData.object])
+		setFilteredPartners(allPartners)
+	}, [shiftData.workPlace])
 
 	const inputChange = (input: Partial<IShift>) => {
 		setShiftData({
@@ -221,16 +221,16 @@ export const ShiftForm = observer(({ shiftId, error, loading }: Props) => {
 							selectedTextStyle={styles.selectedTextStyle}
 							inputSearchStyle={styles.inputSearchStyle}
 							iconStyle={styles.iconStyle}
-							data={filteredContrAgents}
+							data={filteredPartners}
 							search
 							searchField='name'
 							maxHeight={300}
 							labelField={'name'}
 							valueField={'id'}
-							placeholder={shiftData.contrAgent?.name || 'Выберите контрагента'}
+							placeholder={shiftData.partner?.name || 'Выберите контрагента'}
 							searchPlaceholder='Найти...'
-							value={shiftData.contrAgent}
-							onChange={(e) => inputChange({ contrAgent: e })}
+							value={shiftData.partner}
+							onChange={(e) => inputChange({ partner: e })}
 							renderLeftIcon={() => {
 								return <AntDesign style={styles.icon} color='black' name='Safety' size={20} />
 							}}
@@ -238,7 +238,7 @@ export const ShiftForm = observer(({ shiftId, error, loading }: Props) => {
 								return (
 									<div style={styles.item}>
 										<p style={styles.textItem}>{item.name}</p>
-										{item.id === shiftData.contrAgent?.id && (
+										{item.id === shiftData.partner?.id && (
 											<AntDesign style={styles.icon} color='black' name='Safety' size={20} />
 										)}
 									</div>
@@ -255,16 +255,16 @@ export const ShiftForm = observer(({ shiftId, error, loading }: Props) => {
 							selectedTextStyle={styles.selectedTextStyle}
 							inputSearchStyle={styles.inputSearchStyle}
 							iconStyle={styles.iconStyle}
-							data={filteredObjects}
+							data={filteredWorkPlaces}
 							search
 							searchField='name'
 							maxHeight={300}
 							labelField={'name'}
 							valueField={'id'}
-							placeholder={shiftData.object?.name || 'Выберите объект'}
+							placeholder={shiftData.workPlace?.name || 'Выберите объект'}
 							searchPlaceholder='Найти...'
-							value={shiftData.object}
-							onChange={(e) => inputChange({ object: e })}
+							value={shiftData.workPlace}
+							onChange={(e) => inputChange({ workPlace: e })}
 							renderLeftIcon={() => {
 								return <AntDesign style={styles.icon} color='black' name='Safety' size={20} />
 							}}
@@ -272,7 +272,7 @@ export const ShiftForm = observer(({ shiftId, error, loading }: Props) => {
 								return (
 									<div style={styles.item}>
 										<p style={styles.textItem}>{item.name}</p>
-										{item.id === shiftData.object?.id && (
+										{item.id === shiftData.workPlace?.id && (
 											<AntDesign style={styles.icon} color='black' name='Safety' size={20} />
 										)}
 									</div>

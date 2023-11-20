@@ -3,57 +3,57 @@ import store from '../../store'
 import { observer } from 'mobx-react-lite'
 import { StickyHeader } from '../UIkit'
 import { localizedRoleName } from '../../utils'
-import { IContrAgentData } from '../../store/contrAgentStore'
-import { IObject } from '../../store/objectStore'
+import { IPartnerData } from '../../store/partnerStore'
+import { IWorkPlace } from '../../store/workPlaceStore'
 import { Button, Checkbox, Divider, Form, Input, Select, Space } from 'antd'
 
 type Props = {
-	contrAgentId?: number
+	partnerId?: number
 	loading: boolean
 	error: string
 	submitHandler: (values?: any) => void
 }
 
-export const ContrAgentForm = observer(({ contrAgentId, loading, error, submitHandler }: Props) => {
-	const { setContrAgentData, contrAgentData, getContrAgentById } = store.contrAgents
-	const { getObjects } = store.objects
-	const [allObjects, setAllObjects] = useState([] as IObject[])
-	const { name, contacts, address, comments, objects } = contrAgentData
-	const inputChange = (input: Partial<IContrAgentData>) => {
-		setContrAgentData({
-			...contrAgentData,
+export const PartnerForm = observer(({ partnerId, loading, error, submitHandler }: Props) => {
+	const { setPartnerData, partnerData, getPartnerById } = store.partners
+	const { getWorkPlaces } = store.workPlaces
+	const [allWorkPlaces, setAllWorkPlaces] = useState([] as IWorkPlace[])
+	const { name, contacts, address, comments, workPlaces } = partnerData
+	const inputChange = (input: Partial<IPartnerData>) => {
+		setPartnerData({
+			...partnerData,
 			...input,
 		})
 	}
 	useEffect(() => {
 		const start = async () => {
-			if (contrAgentId) {
-				const initialData = await getContrAgentById(contrAgentId)
-				setContrAgentData(initialData)
+			if (partnerId) {
+				const initialData = await getPartnerById(partnerId)
+				setPartnerData(initialData)
 			}
-			const objectsFromApi = await getObjects()
-			if (objectsFromApi instanceof Error) {
+			const workPlacesFromApi = await getWorkPlaces()
+			if (workPlacesFromApi instanceof Error) {
 				return
 			}
-			setAllObjects(objectsFromApi)
+			setAllWorkPlaces(workPlacesFromApi)
 		}
 		start()
 	}, [])
 	const onFinishFailed = (errorInfo: any) => {
 		console.log('Failed:', errorInfo)
 	}
-	const handleChangeObject = (value: string[]) => {
-		const selectedObjects = allObjects.filter((ca) => value.includes(String(ca.id)))
-		if (selectedObjects.length > 0) {
-			inputChange({ objects: selectedObjects })
+	const handleChangeWorkPlace = (value: string[]) => {
+		const selectedWorkPlaces = allWorkPlaces.filter((ca) => value.includes(String(ca.id)))
+		if (selectedWorkPlaces.length > 0) {
+			inputChange({ workPlaces: selectedWorkPlaces })
 		} else {
-			inputChange({ objects: [] })
+			inputChange({ workPlaces: [] })
 		}
 	}
 	return (
 		<div style={{ maxWidth: '600px', margin: '0 auto' }}>
 			<Form
-				name='contrAgent'
+				name='partner'
 				// labelCol={{ span: 8 }}
 				// wrapperCol={{ span: 16 }}
 				style={{ maxWidth: 600 }}
@@ -64,16 +64,16 @@ export const ContrAgentForm = observer(({ contrAgentId, loading, error, submitHa
 			>
 				<h1>Контрагент</h1>
 				<Form.Item>
-					{`${contrAgentData.name}` +
-						(contrAgentData.objects?.length
-							? ` //${contrAgentData.objects.map((obj) => obj.name).join(', ')}`
+					{`${partnerData.name}` +
+						(partnerData.workPlaces?.length
+							? ` //${partnerData.workPlaces.map((obj) => obj.name).join(', ')}`
 							: '')}
 				</Form.Item>
 				<Divider />
 				<div>
 					<Form.Item label='Наименование:'>
 						<Input
-							placeholder={contrAgentData.name || 'Наименование'}
+							placeholder={partnerData.name || 'Наименование'}
 							value={name}
 							onChange={(e) => inputChange({ name: e.target.value })}
 							disabled={loading}
@@ -105,9 +105,9 @@ export const ContrAgentForm = observer(({ contrAgentId, loading, error, submitHa
 							// size={size}
 							placeholder='Please select'
 							// defaultValue={['a10', 'c12']}
-							onChange={handleChangeObject}
+							onChange={handleChangeWorkPlace}
 							style={{ width: '100%' }}
-							options={allObjects}
+							options={allWorkPlaces}
 						/>
 						{/* <MultiSelect
 						style={styles.dropdown}
@@ -115,21 +115,21 @@ export const ContrAgentForm = observer(({ contrAgentId, loading, error, submitHa
 						selectedTextStyle={styles.selectedTextStyle}
 						inputSearchStyle={styles.inputSearchStyle}
 						iconStyle={styles.iconStyle}
-						data={allObjects}
+						data={allWorkPlaces}
 						search
 						searchField='name'
 						maxHeight={300}
 						labelField={'name'}
 						valueField={'id'}
-						placeholder={objects.map((obj) => obj.name).join(', ') || 'Выберите объекты'}
+						placeholder={workPlaces.map((obj) => obj.name).join(', ') || 'Выберите объекты'}
 						searchPlaceholder='Найти...'
-						value={objects?.map((obj) => obj.name || '')}
+						value={workPlaces?.map((obj) => obj.name || '')}
 						onChange={(value: string[]) => {
-							const selectedObjects = allObjects.filter((ca) => value.includes(String(ca.id)))
-							if (selectedObjects.length > 0) {
-								inputChange({ objects: selectedObjects })
+							const selectedWorkPlaces = allWorkPlaces.filter((ca) => value.includes(String(ca.id)))
+							if (selectedWorkPlaces.length > 0) {
+								inputChange({ workPlaces: selectedWorkPlaces })
 							} else {
-								inputChange({ objects: [] })
+								inputChange({ workPlaces: [] })
 							}
 						}}
 						renderLeftIcon={() => {
@@ -139,7 +139,7 @@ export const ContrAgentForm = observer(({ contrAgentId, loading, error, submitHa
 							return (
 								<div style={styles.item}>
 									<p style={styles.textItem}>{item.name}</p>
-									{item.id === contrAgentData.objects?.find((obj) => obj.id === item.id)?.id && (
+									{item.id === partnerData.workPlaces?.find((obj) => obj.id === item.id)?.id && (
 										<AntDesign style={styles.icon} color='black' name='Safety' size={20} />
 									)}
 								</div>
@@ -172,7 +172,7 @@ export const ContrAgentForm = observer(({ contrAgentId, loading, error, submitHa
 							type='primary'
 							htmlType='submit'
 							className='login-form-button'
-							disabled={!contrAgentData.name.length}
+							disabled={!partnerData.name.length}
 						>
 							Записать
 						</Button>

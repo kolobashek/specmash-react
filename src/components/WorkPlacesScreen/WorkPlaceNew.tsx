@@ -3,41 +3,41 @@ import store from '../../store'
 import { observer } from 'mobx-react-lite'
 import { StickyHeader } from '../UIkit'
 import { localizedRoleName } from '../../utils'
-import { IObject } from '../../store/objectStore'
-import { ObjectForm } from './ObjectForm'
-import { IContrAgent } from '../../store/contrAgentStore'
+import { IWorkPlace } from '../../store/workPlaceStore'
+import { WorkPlaceForm } from './WorkPlaceForm'
+import { IPartner } from '../../store/partnerStore'
 import { FloatButton } from 'antd'
 
-export const ObjectNew = observer(() => {
-	const { createObject, clearObjectData, objectData } = store.objects
+export const WorkPlaceNew = observer(() => {
+	const { createWorkPlace, clearWorkPlaceData, workPlaceData } = store.workPlaces
 
 	const [loading, setLoading] = useState(false)
 	const [updateError, setCreateError] = useState('')
 
 	const cancelHandler = () => {
-		// linkTo(`/workplaces/objects`)
+		// linkTo(`/workplaces/workPlaces`)
 	}
-	const createObjectSubmit = async () => {
+	const createWorkPlaceSubmit = async () => {
 		setLoading(true)
-		const createdObject = await createObject(objectData)
-		if (createdObject instanceof Error) {
-			console.log(createdObject)
-			setCreateError(createdObject.message)
+		const createdWorkPlace = await createWorkPlace(workPlaceData)
+		if (createdWorkPlace instanceof Error) {
+			console.log(createdWorkPlace)
+			setCreateError(createdWorkPlace.message)
 			setLoading(false)
-			return createdObject
+			return createdWorkPlace
 		}
-		clearObjectData()
+		clearWorkPlaceData()
 		setCreateError('')
 		setLoading(false)
-		// return linkTo(`/workplaces/objects/${createdObject.id}`)
+		// return linkTo(`/workplaces/workPlaces/${createdWorkPlace.id}`)
 	}
 	if (loading) return <p>Loading...</p>
 	return (
 		<>
-			<ObjectForm error={updateError} loading={loading} />
+			<WorkPlaceForm error={updateError} loading={loading} />
 			<FloatButton
 				// visible={!loading}
-				onClick={createObjectSubmit}
+				onClick={createWorkPlaceSubmit}
 				// placement='left'
 				// icon={{ name: 'check', color: 'white' }}
 				// color='green'

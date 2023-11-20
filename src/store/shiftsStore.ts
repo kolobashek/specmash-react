@@ -1,4 +1,4 @@
-import { objects } from './../services/api/queries/objects'
+import { workPlaces } from './../services/api/queries/workPlaces'
 import { makeAutoObservable } from 'mobx'
 import Queries from '../services/api/queries'
 import _ from 'lodash'
@@ -11,13 +11,13 @@ class ShiftsStore {
 		dateStart: localPrkDate.dateToString(new Date()),
 		dateEnd: localPrkDate.dateToString(new Date(Date.now() + 3 * (24 * 60 * 60 * 1000))),
 		shiftNumber: null, // фильтр по номеру смены
-		objects: [], // фильтр по объектам
+		workPlaces: [], // фильтр по объектам
 		equipments: [], // фильтр по оборудованию
 		drivers: [], // фильтр по водителям
 		hours: '', // должно быть три вида фильтра: заполнено, не заполнено, не имеет значения
 		breaks: '', // аналогично hours
 		comments: '', // аналогично hours
-		contrAgents: '', // фильтр по контрагентам
+		partners: '', // фильтр по контрагентам
 		deleted: '', // фильтр по удаленным записям
 		hoursWorkedStart: '', // фильтр по количеству отработанных часов 'От'
 		hoursWorkedEnd: '', // фильтр по количеству отработанных часов 'До'
@@ -37,11 +37,11 @@ class ShiftsStore {
 		makeAutoObservable(this)
 	}
 	createShift = async () => {
-		const { contrAgent, object, driver, equipment, shiftNumber, ...shiftData } = this.shiftData
+		const { partner, workPlace, driver, equipment, shiftNumber, ...shiftData } = this.shiftData
 		const payload = {
 			...shiftData,
-			contrAgent: Number(contrAgent?.id),
-			object: Number(object?.id),
+			partner: Number(partner?.id),
+			workPlace: Number(workPlace?.id),
 			driver: Number(driver?.id),
 			equipment: Number(equipment?.id),
 			shiftNumber: Number(shiftNumber),
@@ -117,7 +117,7 @@ class ShiftsStore {
 						id: this.shifts.length + 1,
 						date: localPrkDate.dateToString(currentDate),
 						shiftNumber: numToAdd,
-						object: undefined,
+						workPlace: undefined,
 						equipment: undefined,
 						driver: undefined,
 						hours: 0,
@@ -135,7 +135,7 @@ class ShiftsStore {
 		// Фильтруем смены, у которых все поля пустые
 		this.shifts = this.shifts.filter((shift) => {
 			return (
-				shift.object ||
+				shift.workPlace ||
 				shift.equipment ||
 				shift.driver ||
 				shift.hours ||
@@ -194,7 +194,7 @@ class ShiftsStore {
 	}
 	setShiftData = async (shift: Partial<IShift>) => {
 		_.assign(this.shiftData, shift)
-		// Object.entries(shift).forEach(([key, value]) => {
+		// WorkPlace.entries(shift).forEach(([key, value]) => {
 		// 	this.shiftData[key as keyof IShift] = value as IShift[typeof key]
 		// })
 	}
@@ -250,8 +250,8 @@ export interface IShift {
 	id: number
 	date: string
 	shiftNumber: number
-	object?: innerChildren
-	contrAgent?: innerChildren
+	workPlace?: innerChildren
+	partner?: innerChildren
 	equipment?: innerChildren
 	driver?: innerChildren
 	hours?: number

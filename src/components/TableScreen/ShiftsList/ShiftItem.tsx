@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const ShiftItem = observer(({ item }: Props) => {
-	const { id, date, shiftNumber, object, equipment, driver, hours, breaks, comments } = item
+	const { id, date, shiftNumber, workPlace, equipment, driver, hours, breaks, comments } = item
 	const [visible, setVisible] = React.useState(true) // состояние для видимости компонента
 
 	const {
@@ -27,7 +27,7 @@ export const ShiftItem = observer(({ item }: Props) => {
 		<div key={id}>
 			<p>{date || '--'}</p>
 			<p>{shiftNumber || '--'}</p>
-			<p>{object?.name || '--'}</p>
+			<p>{workPlace?.name || '--'}</p>
 			<p>{equipment?.name || '--'}</p>
 			<p>{driver?.name || '--'}</p>
 			<p>{hours || '--'}</p>
@@ -75,7 +75,7 @@ export const ShiftItem = observer(({ item }: Props) => {
 // const cols = [
 // 	{ key: 'date', label: 'Дата' },
 // 	{ key: 'shiftNumber', label: 'Смена' },
-// 	{ key: 'object', label: 'Объект' },
+// 	{ key: 'workPlace', label: 'Объект' },
 // 	{ key: 'equipment', label: 'Машина' },
 // 	{ key: 'driver', label: 'Водитель' },
 // 	{ key: 'hours', label: 'Часы работы' },

@@ -3,16 +3,16 @@ import authStore from './authStore'
 import shiftsStore from './shiftsStore'
 import machinesStore from './machinesStore'
 import usersStore from './usersStore'
-import contrAgentStore from './contrAgentStore'
-import objectStore from './objectStore'
+import partnerStore from './partnerStore'
+import workPlaceStore from './workPlaceStore'
 
 class Store {
 	auth = authStore
 	shifts = shiftsStore
 	machines = machinesStore
 	users = usersStore
-	contrAgents = contrAgentStore
-	objects = objectStore
+	partners = partnerStore
+	workPlaces = workPlaceStore
 
 	constructor() {
 		makeAutoObservable(this)

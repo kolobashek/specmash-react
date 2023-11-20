@@ -54,6 +54,10 @@ export const UsersList = observer(({ navigation }: any) => {
 			<List
 				itemLayout='horizontal'
 				dataSource={list}
+				style={{
+					maxWidth: 600,
+					margin: '0 auto',
+				}}
 				renderItem={(user) => {
 					return (
 						<List.Item

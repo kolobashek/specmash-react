@@ -2,62 +2,68 @@ import React, { useEffect, useState } from 'react'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
 import { StickyHeader } from '../UIkit'
-import { ObjectCard } from './ObjectCard'
+import { WorkPlaceCard } from './WorkPlaceCard'
 import { redirect, useNavigate } from 'react-router-dom'
 import Link from 'antd/es/typography/Link'
 import { Avatar, Button, FloatButton, Input, List } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 
-export const ObjectsList = observer(() => {
+export const WorkPlacesList = observer(() => {
 	const linkTo = useNavigate()
-	const { list, objectData, setObjectData, createObject, clearObjectData, getObjects } =
-		store.objects
+	const {
+		list,
+		workPlaceData,
+		setWorkPlaceData,
+		createWorkPlace,
+		clearWorkPlaceData,
+		getWorkPlaces,
+	} = store.workPlaces
 	useEffect(() => {
-		getObjects()
+		getWorkPlaces()
 	}, [])
 
 	const [visibleAddButton, setVisibleAddButton] = useState(true)
 	const [loading, setLoading] = useState(false)
 	const [isVisibleBS, setIsVisibleBS] = useState(false)
 	const [isActive, setIsActive] = useState(false)
-	const addObjectHandler = async () => {
+	const addWorkPlaceHandler = async () => {
 		setVisibleAddButton(false)
 	}
-	const addObjectSubmit = async () => {
+	const addWorkPlaceSubmit = async () => {
 		setLoading(true)
-		const newObject = await createObject(objectData)
-		if (newObject instanceof Error) {
-			console.log(newObject)
+		const newWorkPlace = await createWorkPlace(workPlaceData)
+		if (newWorkPlace instanceof Error) {
+			console.log(newWorkPlace)
 			setLoading(false)
 		}
 		setVisibleAddButton(true)
 		setLoading(false)
-		clearObjectData()
-		getObjects()
+		clearWorkPlaceData()
+		getWorkPlaces()
 	}
 	const cancelHandler = () => {
 		setVisibleAddButton(true)
 	}
 	const isActiveHandler = () => {
 		setIsActive(!isActive)
-		// setObjectData({ isActive: !isActive })
+		// setWorkPlaceData({ isActive: !isActive })
 	}
 	return (
 		<>
 			<div>
 				<div>
-					{list.map((object) => {
+					{list.map((workPlace) => {
 						return (
-							<Link href={`/objects/${object.id}`} key={object.id}>
+							<Link href={`/workPlaces/${workPlace.id}`} key={workPlace.id}>
 								<List.Item>
 									<Avatar
-										// title={object.name?.charAt(0).toUpperCase()}
+										// title={workPlace.name?.charAt(0).toUpperCase()}
 										// containerStyle={{ backgroundColor: 'grey' }}
 										icon={<UserOutlined />}
 									/>
-									<p>{object.name}</p>
-									<p>{object.address}</p>
-									<p>{object.contacts}</p>
+									<p>{workPlace.name}</p>
+									<p>{workPlace.address}</p>
+									<p>{workPlace.contacts}</p>
 								</List.Item>
 							</Link>
 						)
@@ -68,18 +74,18 @@ export const ObjectsList = observer(() => {
 								<div>
 									<Input
 										placeholder='Наименование'
-										value={objectData.name}
-										onChange={(e) => setObjectData({ name: e.target.value })}
+										value={workPlaceData.name}
+										onChange={(e) => setWorkPlaceData({ name: e.target.value })}
 										disabled={loading}
 									/>
 								</div>
 								<div>
 									<Input
 										placeholder='Контакты'
-										value={objectData.contacts}
+										value={workPlaceData.contacts}
 										onChange={(e) => {
 											console.log(e)
-											setObjectData({ contacts: e.target.value })
+											setWorkPlaceData({ contacts: e.target.value })
 										}}
 										disabled={loading}
 									/>
@@ -87,16 +93,16 @@ export const ObjectsList = observer(() => {
 								<div>
 									<Input
 										placeholder='Адрес'
-										value={objectData.address}
-										onChange={(e) => setObjectData({ address: e.target.value })}
+										value={workPlaceData.address}
+										onChange={(e) => setWorkPlaceData({ address: e.target.value })}
 										disabled={loading}
 									/>
 								</div>
 								{/* <div style={styles.inputsCell}>
 									<Input
 										placeholder='Комментарий'
-										value={objectData.comment}
-										onChangeText={(e) => setObjectData({ comment: e })}
+										value={workPlaceData.comment}
+										onChangeText={(e) => setWorkPlaceData({ comment: e })}
 										disabled={loading}
 									/>
 								</div> */}
@@ -107,8 +113,8 @@ export const ObjectsList = observer(() => {
 									// style={styles.row}
 									color={'green'}
 									// icon={{ name: 'check', color: 'white' }}
-									disabled={!objectData.name || loading}
-									onClick={addObjectSubmit}
+									disabled={!workPlaceData.name || loading}
+									onClick={addWorkPlaceSubmit}
 									loading={loading}
 								/>
 								<Button
@@ -122,10 +128,10 @@ export const ObjectsList = observer(() => {
 					)}
 				</div>
 			</div>
-			<Link href={'/objects/new'}>
+			<Link href={'/workPlaces/new'}>
 				<FloatButton
 				// visible={visibleAddButton}
-				// onClick={() => linkTo('/objects/new')}
+				// onClick={() => linkTo('/workPlaces/new')}
 				// placement='right'
 				// icon={{ name: 'add', color: 'white' }}
 				// color='green'

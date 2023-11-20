@@ -5,69 +5,69 @@ import store from '../../store'
 import { observer } from 'mobx-react-lite'
 import { StickyHeader } from '../UIkit'
 import { localizedRoleName } from '../../utils'
-import { IContrAgent } from '../../store/contrAgentStore'
+import { IPartner } from '../../store/partnerStore'
 
-export const ContrAgentCard = observer(() => {
+export const PartnerCard = observer(() => {
 	const navigate = useNavigate()
 	const { id } = useParams()
 	const { Text } = Typography
 	const {
-		// currentContrAgent,
-		// setCurrentContrAgent,
-		getContrAgentById,
-		getContrAgents,
-		updateContrAgent,
-		clearContrAgentData,
-		setContrAgentData,
-		contrAgentData,
-	} = store.contrAgents
-	const contrAgentId = Number(id)
+		// currentPartner,
+		// setCurrentPartner,
+		getPartnerById,
+		getPartners,
+		updatePartner,
+		clearPartnerData,
+		setPartnerData,
+		partnerData,
+	} = store.partners
+	const partnerId = Number(id)
 	useEffect(() => {
-		const contrAgent = async () => {
-			const input = await getContrAgentById(contrAgentId)
+		const partner = async () => {
+			const input = await getPartnerById(partnerId)
 			if (input instanceof Error) {
 				return new Error('Unable to fetch user')
 			}
-			setContrAgentData(input)
+			setPartnerData(input)
 		}
-		contrAgent()
+		partner()
 	}, [])
 
 	const [visibleEditButton, setVisibleEditButton] = useState(true)
 	const [loading, setLoading] = useState(false)
 	const [updateError, setUpdateError] = useState('')
 
-	const editContrAgentHandler = () => {
-		navigate(`/workplaces/contragents/${contrAgentId}/edit`)
+	const editPartnerHandler = () => {
+		navigate(`/workplaces/contragents/${partnerId}/edit`)
 	}
-	const editContrAgentSubmit = async (id: number) => {
+	const editPartnerSubmit = async (id: number) => {
 		setLoading(true)
-		const newContrAgent = await updateContrAgent({ id, ...contrAgentData })
-		if (newContrAgent instanceof Error) {
-			console.log(newContrAgent)
-			setUpdateError(newContrAgent.message)
+		const newPartner = await updatePartner({ id, ...partnerData })
+		if (newPartner instanceof Error) {
+			console.log(newPartner)
+			setUpdateError(newPartner.message)
 			setLoading(false)
 			return null
 		}
 		setUpdateError('')
-		// setCurrentContrAgent(newContrAgent)
+		// setCurrentPartner(newPartner)
 		setVisibleEditButton(true)
 		setLoading(false)
-		clearContrAgentData()
-		return newContrAgent
+		clearPartnerData()
+		return newPartner
 	}
-	if (!contrAgentData) return <p>Что-то пошло не так.</p>
+	if (!partnerData) return <p>Что-то пошло не так.</p>
 	return (
 		<>
-			<Card title={`${contrAgentData.name}`}>
+			<Card title={`${partnerData.name}`}>
 				<p>
 					<Text>Адрес:</Text>
-					<Text>{`${contrAgentData.address ? contrAgentData.address : ''}`}</Text>
+					<Text>{`${partnerData.address ? partnerData.address : ''}`}</Text>
 				</p>
 			</Card>
 			{/* <FloatButton
 				visible={visibleEditButton}
-				onPress={editContrAgentHandler}
+				onPress={editPartnerHandler}
 				placement='right'
 				color='green'
 			/> */}

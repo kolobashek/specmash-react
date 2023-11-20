@@ -2,15 +2,15 @@ import { shifts } from './shifts'
 import { machines } from './machines'
 import { APIError } from 'graphql-hooks'
 import { users } from './users'
-import { objects } from './objects'
-import { contrAgents } from './contrAgents'
+import { workPlaces } from './workPlaces'
+import { partners } from './partners'
 import { auth } from './auth'
 
 const Queries = {
 	...auth,
 	...users,
-	...objects,
-	...contrAgents,
+	...workPlaces,
+	...partners,
 	...machines,
 	...shifts,
 }

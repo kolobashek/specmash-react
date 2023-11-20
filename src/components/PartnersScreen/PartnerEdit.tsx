@@ -3,41 +3,41 @@ import store from '../../store'
 import { useNavigate, useParams } from 'react-router-dom'
 import { FloatButton } from 'antd'
 import { observer } from 'mobx-react-lite'
-import { ContrAgentForm } from './ContrAgentForm'
+import { PartnerForm } from './PartnerForm'
 
-export const ContrAgentEdit = observer(() => {
+export const PartnerEdit = observer(() => {
 	const navigate = useNavigate()
 	const { id } = useParams()
-	const contrAgentId = Number(id)
-	const { updateContrAgent, contrAgentData } = store.contrAgents
+	const partnerId = Number(id)
+	const { updatePartner, partnerData } = store.partners
 	const [loading, setLoading] = useState(false)
 	const [updateError, setUpdateError] = useState('')
 
-	const updateContrAgentSubmit = async () => {
+	const updatePartnerSubmit = async () => {
 		setLoading(true)
-		const updatedContrAgent = await updateContrAgent({ id: contrAgentId, ...contrAgentData })
-		if (updatedContrAgent instanceof Error) {
-			console.log(updatedContrAgent)
-			setUpdateError(updatedContrAgent.message)
+		const updatedPartner = await updatePartner({ id: partnerId, ...partnerData })
+		if (updatedPartner instanceof Error) {
+			console.log(updatedPartner)
+			setUpdateError(updatedPartner.message)
 			setLoading(false)
-			return updatedContrAgent
+			return updatedPartner
 		}
 		setUpdateError('')
-		// setCurrentContrAgent(updatedContrAgent)
+		// setCurrentPartner(updatedPartner)
 		setLoading(false)
-		return navigate(`/workplaces/contragents/${updatedContrAgent.id}`)
+		return navigate(`/workplaces/contragents/${updatedPartner.id}`)
 	}
 	const cancelHandler = () => {
-		navigate(`/workplaces/contragents/${contrAgentId}`)
+		navigate(`/workplaces/contragents/${partnerId}`)
 	}
 	if (loading) return <p>Loading...</p>
 	return (
 		<>
-			<ContrAgentForm
-				contrAgentId={contrAgentId}
+			<PartnerForm
+				partnerId={partnerId}
 				error={updateError}
 				loading={loading}
-				submitHandler={updateContrAgentSubmit}
+				submitHandler={updatePartnerSubmit}
 			/>
 		</>
 	)

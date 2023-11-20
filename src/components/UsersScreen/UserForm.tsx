@@ -73,7 +73,7 @@ export const UserForm = ({ loading, error, submitHandler }: Props) => {
 	}
 	return (
 		<Form
-			name='contrAgent'
+			name='partner'
 			labelCol={{ span: 8 }}
 			wrapperCol={{ span: 16 }}
 			style={{ maxWidth: 600 }}
@@ -131,21 +131,21 @@ export const UserForm = ({ loading, error, submitHandler }: Props) => {
 						selectedTextStyle={styles.selectedTextStyle}
 						inputSearchStyle={styles.inputSearchStyle}
 						iconStyle={styles.iconStyle}
-						data={allObjects}
+						data={allWorkPlaces}
 						search
 						searchField='name'
 						maxHeight={300}
 						labelField={'name'}
 						valueField={'id'}
-						placeholder={objects.map((obj) => obj.name).join(', ') || 'Выберите объекты'}
+						placeholder={workPlaces.map((obj) => obj.name).join(', ') || 'Выберите объекты'}
 						searchPlaceholder='Найти...'
-						value={objects?.map((obj) => obj.name || '')}
+						value={workPlaces?.map((obj) => obj.name || '')}
 						onChange={(value: string[]) => {
-							const selectedObjects = allObjects.filter((ca) => value.includes(String(ca.id)))
-							if (selectedObjects.length > 0) {
-								inputChange({ objects: selectedObjects })
+							const selectedWorkPlaces = allWorkPlaces.filter((ca) => value.includes(String(ca.id)))
+							if (selectedWorkPlaces.length > 0) {
+								inputChange({ workPlaces: selectedWorkPlaces })
 							} else {
-								inputChange({ objects: [] })
+								inputChange({ workPlaces: [] })
 							}
 						}}
 						renderLeftIcon={() => {
@@ -155,7 +155,7 @@ export const UserForm = ({ loading, error, submitHandler }: Props) => {
 							return (
 								<div style={styles.item}>
 									<p style={styles.textItem}>{item.name}</p>
-									{item.id === userData.objects?.find((obj) => obj.id === item.id)?.id && (
+									{item.id === userData.workPlaces?.find((obj) => obj.id === item.id)?.id && (
 										<AntDesign style={styles.icon} color='black' name='Safety' size={20} />
 									)}
 								</div>

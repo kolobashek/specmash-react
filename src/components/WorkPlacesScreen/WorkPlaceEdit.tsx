@@ -3,68 +3,68 @@ import store from '../../store'
 import { observer } from 'mobx-react-lite'
 import { StickyHeader } from '../UIkit'
 import { localizedRoleName } from '../../utils'
-import { IObject } from '../../store/objectStore'
-import { ObjectForm } from './ObjectForm'
-import { IContrAgent } from '../../store/contrAgentStore'
+import { IWorkPlace } from '../../store/workPlaceStore'
+import { WorkPlaceForm } from './WorkPlaceForm'
+import { IPartner } from '../../store/partnerStore'
 import { FloatButton } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
 
-export const ObjectEdit = observer(({ navigation }: any) => {
+export const WorkPlaceEdit = observer(({ navigation }: any) => {
 	const linkTo = useNavigate()
 	const { id } = useParams()
 	const {
-		createObject,
-		clearObjectData,
-		setObjectData,
-		objectData,
-		getObjectById,
-		setCurrentObject,
-		updateObject,
-	} = store.objects
-	const objectId = Number(id)
+		createWorkPlace,
+		clearWorkPlaceData,
+		setWorkPlaceData,
+		workPlaceData,
+		getWorkPlaceById,
+		setCurrentWorkPlace,
+		updateWorkPlace,
+	} = store.workPlaces
+	const workPlaceId = Number(id)
 	console.log(navigation.getState().routes)
 	const [loading, setLoading] = useState(false)
 	const [updateError, setCreateError] = useState('')
-	const [allContAgents, setAllContAgents] = useState([] as IContrAgent[])
-	const { getContrAgents } = store.contrAgents
+	const [allContAgents, setAllContAgents] = useState([] as IPartner[])
+	const { getPartners } = store.partners
 
 	useEffect(() => {
 		const start = async () => {
-			const objFromApi = await getObjectById(objectId)
+			const objFromApi = await getWorkPlaceById(workPlaceId)
 			if (objFromApi instanceof Error) {
-				return linkTo(`/workplaces/objects/${objectId}`)
+				return linkTo(`/workplaces/workPlaces/${workPlaceId}`)
 			}
-			const contrAgentsFromApi = await getContrAgents()
-			if (contrAgentsFromApi instanceof Error) {
+			const partnersFromApi = await getPartners()
+			if (partnersFromApi instanceof Error) {
 				return
 			}
-			setAllContAgents(contrAgentsFromApi)
-			setObjectData(objFromApi)
+			setAllContAgents(partnersFromApi)
+			setWorkPlaceData(objFromApi)
 		}
 		start()
 	}, [])
 
 	const cancelHandler = () => {
-		linkTo(`/workplaces/objects/${objectId}`)
+		linkTo(`/workplaces/workPlaces/${workPlaceId}`)
 	}
-	const createObjectSubmit = async () => {
+	const createWorkPlaceSubmit = async () => {
 		setLoading(true)
-		const updatedObject = await updateObject({ id: objectId, ...objectData })
-		if (updatedObject instanceof Error) {
-			console.log(updatedObject)
-			setCreateError(updatedObject.message)
+		const updatedWorkPlace = await updateWorkPlace({ id: workPlaceId, ...workPlaceData })
+		if (updatedWorkPlace instanceof Error) {
+			console.log(updatedWorkPlace)
+			setCreateError(updatedWorkPlace.message)
 			setLoading(false)
-			return updatedObject
+			return updatedWorkPlace
 		}
 		setCreateError('')
-		setCurrentObject(updatedObject)
+		setCurrentWorkPlace(updatedWorkPlace)
 		setLoading(false)
-		return linkTo(`/objects/${updatedObject.id}`)
+		return linkTo(`/workPlaces/${updatedWorkPlace.id}`)
 	}
 	if (loading) return <p>Loading...</p>
 	return (
 		<>
-			<ObjectForm objectId={objectId} error={updateError} loading={loading} />
+			<WorkPlaceForm workPlaceId={workPlaceId} error={updateError} loading={loading} />
 		</>
 	)
 })

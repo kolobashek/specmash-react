@@ -1,44 +1,40 @@
 import React, { useEffect, useState } from 'react'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
-import { ContrAgentForm } from './ContrAgentForm'
-import { IObject } from '../../store/objectStore'
+import { PartnerForm } from './PartnerForm'
+import { IWorkPlace } from '../../store/workPlaceStore'
 import { useNavigate } from 'react-router-dom'
 import { FloatButton } from 'antd'
 import { CiCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 
-export const ContrAgentNew = observer(() => {
+export const PartnerNew = observer(() => {
 	const linkTo = useNavigate()
-	const { createContrAgent, clearContrAgentData, contrAgentData } = store.contrAgents
+	const { createPartner, clearPartnerData, partnerData } = store.partners
 	const [loading, setLoading] = useState(false)
 	const [updateError, setCreateError] = useState('')
 
 	const cancelHandler = (e: any) => {
 		linkTo('/contragents')
 	}
-	const createContrAgentSubmit = async () => {
+	const createPartnerSubmit = async () => {
 		setLoading(true)
-		const createdContrAgent = await createContrAgent(contrAgentData)
-		if (createdContrAgent instanceof Error) {
-			console.log(createdContrAgent)
-			setCreateError(createdContrAgent.message)
+		const createdPartner = await createPartner(partnerData)
+		if (createdPartner instanceof Error) {
+			console.log(createdPartner)
+			setCreateError(createdPartner.message)
 			setLoading(false)
-			return createdContrAgent
+			return createdPartner
 		}
-		clearContrAgentData()
+		clearPartnerData()
 		setCreateError('')
 		setLoading(false)
-		console.log(createdContrAgent)
-		return linkTo(`/contragents/${createdContrAgent.id}`)
+		console.log(createdPartner)
+		return linkTo(`/contragents/${createdPartner.id}`)
 	}
 	if (loading) return <p>Loading...</p>
 	return (
 		<>
-			<ContrAgentForm
-				error={updateError}
-				loading={loading}
-				submitHandler={createContrAgentSubmit}
-			/>
+			<PartnerForm error={updateError} loading={loading} submitHandler={createPartnerSubmit} />
 		</>
 	)
 })

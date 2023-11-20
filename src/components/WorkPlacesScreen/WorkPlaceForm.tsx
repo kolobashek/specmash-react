@@ -2,55 +2,55 @@ import React, { useEffect, useState } from 'react'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
 import { localizedRoleName } from '../../utils'
-import { IObjectData } from '../../store/objectStore'
-import { IObject } from '../../store/objectStore'
-import { IContrAgent } from '../../store/contrAgentStore'
+import { IWorkPlaceData } from '../../store/workPlaceStore'
+import { IWorkPlace } from '../../store/workPlaceStore'
+import { IPartner } from '../../store/partnerStore'
 import { Card, Divider, Input, List, Select } from 'antd'
 import Title from 'antd/es/typography/Title'
 
 type Props = {
-	objectId?: number
-	// setObjectData: (object: IObjectData) => void
-	// contrAgentVariants: IContrAgent[]
+	workPlaceId?: number
+	// setWorkPlaceData: (workPlace: IWorkPlaceData) => void
+	// partnerVariants: IPartner[]
 	loading?: boolean
 	error?: string
 }
 
-export const ObjectForm = observer(({ objectId, loading, error }: Props) => {
-	const { setObjectData, objectData, getObjectById } = store.objects
-	const { getContrAgents } = store.contrAgents
-	// const [name, setObjectName] = useState(objectData.name)
-	// const [contacts, setObjectContacts] = useState(objectData.contacts)
-	// const [address, setObjectAddress] = useState(objectData.address)
-	// // const [comment, setObjectComment] = useState(objectData.comment)
-	// const [contrAgents, setObjectContragents] = useState(objectData.contrAgents || [])
-	const { name, contacts, address, contrAgents } = objectData
-	const [allContrAgents, setAllContrAgents] = useState([] as IContrAgent[])
-	const inputChange = (input: Partial<IObjectData>) => {
-		setObjectData({
-			...objectData,
+export const WorkPlaceForm = observer(({ workPlaceId, loading, error }: Props) => {
+	const { setWorkPlaceData, workPlaceData, getWorkPlaceById } = store.workPlaces
+	const { getPartners } = store.partners
+	// const [name, setWorkPlaceName] = useState(workPlaceData.name)
+	// const [contacts, setWorkPlaceContacts] = useState(workPlaceData.contacts)
+	// const [address, setWorkPlaceAddress] = useState(workPlaceData.address)
+	// // const [comment, setWorkPlaceComment] = useState(workPlaceData.comment)
+	// const [partners, setWorkPlacePartners] = useState(workPlaceData.partners || [])
+	const { name, contacts, address, partners } = workPlaceData
+	const [allPartners, setAllPartners] = useState([] as IPartner[])
+	const inputChange = (input: Partial<IWorkPlaceData>) => {
+		setWorkPlaceData({
+			...workPlaceData,
 			...input,
 		})
 	}
 	useEffect(() => {
 		const start = async () => {
-			const cAFromApi = await getContrAgents()
+			const cAFromApi = await getPartners()
 			if (cAFromApi instanceof Error) {
 				return
 			}
-			setAllContrAgents(cAFromApi)
-			if (objectId) {
-				const initialData = await getObjectById(objectId)
-				setObjectData(initialData)
+			setAllPartners(cAFromApi)
+			if (workPlaceId) {
+				const initialData = await getWorkPlaceById(workPlaceId)
+				setWorkPlaceData(initialData)
 			}
 		}
 	}, [])
 	return (
 		<Card
 			title={
-				`${objectData.name}` +
-				(objectData.contrAgents?.length
-					? ` //${objectData.contrAgents.map((ca) => ca.name).join(', ')}`
+				`${workPlaceData.name}` +
+				(workPlaceData.partners?.length
+					? ` //${workPlaceData.partners.map((ca) => ca.name).join(', ')}`
 					: '')
 			}
 		>
@@ -59,7 +59,7 @@ export const ObjectForm = observer(({ objectId, loading, error }: Props) => {
 				<List.Item>
 					<Title>Наименование:</Title>
 					<Input
-						placeholder={objectData.name || 'Наименование'}
+						placeholder={workPlaceData.name || 'Наименование'}
 						value={name}
 						onChange={(e) => inputChange({ name: e.target.value })}
 						disabled={loading}
@@ -93,22 +93,22 @@ export const ObjectForm = observer(({ objectId, loading, error }: Props) => {
 				<List.Item>
 					<Title>Контрагенты:</Title>
 					<Select
-						options={allContrAgents}
-						placeholder={contrAgents.map((obj) => obj.name).join(', ') || 'Выберите контрагентов'}
-						value={contrAgents.map((obj) => obj.name)}
+						options={allPartners}
+						placeholder={partners.map((obj) => obj.name).join(', ') || 'Выберите контрагентов'}
+						value={partners.map((obj) => obj.name)}
 						onChange={(value: string[]) => {
-							const selectedCAs = allContrAgents.filter((ca) => value.includes(String(ca.id)))
+							const selectedCAs = allPartners.filter((ca) => value.includes(String(ca.id)))
 							if (selectedCAs.length > 0) {
-								inputChange({ contrAgents: selectedCAs })
+								inputChange({ partners: selectedCAs })
 							} else {
-								inputChange({ contrAgents: [] })
+								inputChange({ partners: [] })
 							}
 						}}
 						// optionRender={(item) => {
 						// 	return (
 						// 		<div >
 						// 			<p >{item.name}</p>
-						// 			{item.id === objectData.contrAgents?.find((obj) => obj.id === item.id)?.id}
+						// 			{item.id === workPlaceData.partners?.find((obj) => obj.id === item.id)?.id}
 						// 		</div>
 						// 	)
 						// }}
@@ -120,7 +120,7 @@ export const ObjectForm = observer(({ objectId, loading, error }: Props) => {
 					<ListItem.Input
 						placeholder={comment || 'Комментарий'}
 						value={comment}
-						onChangeText={setObjectComment}
+						onChangeText={setWorkPlaceComment}
 						disabled={loading}
 						style={{ textAlign: 'left' }}
 					/>

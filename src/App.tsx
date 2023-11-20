@@ -18,22 +18,22 @@ import {
 	LoginScreen,
 	ShiftScreen,
 	InfoScreen,
-	ContrAgentsList,
+	PartnersList,
 	UsersList,
-	ContrAgentCard,
+	PartnerCard,
 	MachinesList,
 	MachineCard,
 	MachineEdit,
 	MachineNew,
 	ScheduleScreen,
-	ContrAgentEdit,
-	ContrAgentNew,
+	PartnerEdit,
+	PartnerNew,
 	UserNew,
 	UserEdit,
-	ObjectsList,
-	ObjectEdit,
-	ObjectNew,
-	ObjectCard,
+	WorkPlacesList,
+	WorkPlaceEdit,
+	WorkPlaceNew,
+	WorkPlaceCard,
 	UserCard,
 } from './components'
 
@@ -143,7 +143,7 @@ const AppLayout = observer(({ children }: { children?: React.ReactNode }) => {
 							</Link>
 						</p>
 						<p>
-							<Link to='/objects' onClick={onClose}>
+							<Link to='/workPlaces' onClick={onClose}>
 								Объекты
 							</Link>
 						</p>
@@ -226,28 +226,28 @@ const router = createBrowserRouter([
 				],
 			},
 			{
-				path: 'objects',
+				path: 'workPlaces',
 				loader: protectedLoader,
 				element: <Outlet />,
 				children: [
 					{
 						index: true,
-						element: <ObjectsList />,
+						element: <WorkPlacesList />,
 					},
 					{
 						path: ':id',
 						loader: protectedLoader,
-						element: <ObjectCard />,
+						element: <WorkPlaceCard />,
 					},
 					{
 						path: ':id/edit',
 						loader: protectedLoader,
-						element: <ObjectEdit />,
+						element: <WorkPlaceEdit />,
 					},
 					{
 						path: 'new',
 						loader: protectedLoader,
-						element: <ObjectNew />,
+						element: <WorkPlaceNew />,
 					},
 				],
 			},
@@ -258,22 +258,22 @@ const router = createBrowserRouter([
 				children: [
 					{
 						index: true,
-						element: <ContrAgentsList />,
+						element: <PartnersList />,
 					},
 					{
 						path: 'new',
 						loader: protectedLoader,
-						element: <ContrAgentNew />,
+						element: <PartnerNew />,
 					},
 					{
 						path: ':id',
 						loader: protectedLoader,
-						element: <ContrAgentCard />,
+						element: <PartnerCard />,
 					},
 					{
 						path: ':id/edit',
 						loader: protectedLoader,
-						element: <ContrAgentEdit />,
+						element: <PartnerEdit />,
 					},
 				],
 			},

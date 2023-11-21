@@ -37,27 +37,7 @@ export const MachineNew = observer(({ navigation }: any) => {
 	if (loading) return <p>Loading...</p>
 	return (
 		<>
-			<MachineForm
-				machineData={machineData}
-				setMachineData={setMachineData}
-				types={types}
-				error={updateError}
-				loading={loading}
-			/>
-			<FloatButton
-				// visible={!loading}
-				onClick={createMachineSubmit}
-				// placement='left'
-				// icon={{ name: 'check', color: 'white' }}
-				// color='green'
-			/>
-			<FloatButton
-				// visible={!loading}
-				onClick={cancelHandler}
-				// placement='right'
-				// icon={{ name: 'cancel', color: 'white' }}
-				// color='red'
-			/>
+			<MachineForm />
 		</>
 	)
 })

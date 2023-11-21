@@ -3,6 +3,7 @@ import store from '../../store'
 import { observer } from 'mobx-react-lite'
 import { useNavigate } from 'react-router-dom'
 import { FloatButton } from 'antd'
+import { PlusCircleOutlined } from '@ant-design/icons'
 
 export const MachinesList = observer(() => {
 	const {
@@ -40,29 +41,29 @@ export const MachinesList = observer(() => {
 	const cancelHandler = () => {
 		setVisibleAddButton(true)
 	}
-	const typesList = [
-		...types.map((type) => {
-			return {
-				key: type.id,
-				title: type.name,
-				containerStyle: { backgroundColor: 'white' },
-				titleStyle: { color: 'black' },
-				onPress: async () => {
-					setMachineData({ type: type.name })
-					setIsVisibleBS(false)
-				},
-			}
-		}),
-		{
-			title: 'Cancel',
-			containerStyle: { backgroundColor: 'red' },
-			titleStyle: { color: 'white' },
-			onPress: () => {
-				setIsVisibleBS(false)
-				setVisibleAddButton(true)
-			},
-		},
-	]
+	// const typesList = [
+	// 	...types.map((type) => {
+	// 		return {
+	// 			key: type.id,
+	// 			title: type.name,
+	// 			containerStyle: { backgroundColor: 'white' },
+	// 			titleStyle: { color: 'black' },
+	// 			onPress: async () => {
+	// 				setMachineData({ type: type.name })
+	// 				setIsVisibleBS(false)
+	// 			},
+	// 		}
+	// 	}),
+	// 	{
+	// 		title: 'Cancel',
+	// 		containerStyle: { backgroundColor: 'red' },
+	// 		titleStyle: { color: 'white' },
+	// 		onPress: () => {
+	// 			setIsVisibleBS(false)
+	// 			setVisibleAddButton(true)
+	// 		},
+	// 	},
+	// ]
 	return (
 		<>
 			<div>
@@ -172,11 +173,10 @@ export const MachinesList = observer(() => {
 				</div>
 			</div>
 			<FloatButton
-				// visible={visibleAddButton}
 				onClick={() => linkTo('/machines/new')}
-				// placement='right'
-				// icon={{ name: 'add', color: 'white' }}
-				// color='green'
+				icon={<PlusCircleOutlined style={{ fontWeight: 'bold' }} />}
+				tooltip='Добавить'
+				type='primary'
 			/>
 		</>
 	)

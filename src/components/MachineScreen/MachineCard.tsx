@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Card, Divider, FloatButton, List } from 'antd'
 import Title from 'antd/es/typography/Title'
 
-export const MachineCard = observer(({ navigation }: any) => {
+export const MachineCard = observer(() => {
 	const {
 		currentMachine,
 		setCurrentMachine,
@@ -86,7 +86,7 @@ export const MachineCard = observer(({ navigation }: any) => {
 					</List.Item>
 					<List.Item>
 						<Title>Тип: </Title>
-						<p>{`${currentMachine.type}`}</p>
+						<p>{`${currentMachine.type.name}`}</p>
 					</List.Item>
 					<List.Item>
 						<Title>Гос. номер:</Title>

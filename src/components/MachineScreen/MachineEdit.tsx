@@ -49,11 +49,11 @@ export const MachineEdit = observer(({ navigation }: any) => {
 	return (
 		<>
 			<MachineForm
-				machineData={machineData}
-				setMachineData={setMachineData}
-				types={types}
-				error={updateError}
-				loading={loading}
+			// machineData={machineData}
+			// setMachineData={setMachineData}
+			// types={types}
+			// error={updateError}
+			// loading={loading}
 			/>
 			<FloatButton
 				// visible={!loading}

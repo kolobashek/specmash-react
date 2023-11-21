@@ -3,7 +3,10 @@ export const machines = {
 		mutation updateEquipment($input: UpdateEquipmentInput!) {
 			updateEquipment(input: $input) {
 				id
-				type
+				type {
+					id
+					name
+				}
 				name
 				dimensions
 				weight
@@ -31,7 +34,10 @@ export const machines = {
 		query equipment($id: ID!) {
 			equipment(id: $id) {
 				id
-				type
+				type {
+					id
+					name
+				}
 				name
 				dimensions
 				weight

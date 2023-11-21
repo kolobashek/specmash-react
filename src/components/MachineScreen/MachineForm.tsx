@@ -4,125 +4,168 @@ import { observer } from 'mobx-react-lite'
 import { StickyHeader } from '../UIkit'
 import { localizedRoleName } from '../../utils'
 import { IMachineData, MachineType } from '../../store/machinesStore'
-import { Card, Divider, Input, List } from 'antd'
+import { Button, Card, Divider, Form, Input, List, Select, Space } from 'antd'
 import Title from 'antd/es/typography/Title'
+import { useNavigate, useParams } from 'react-router-dom'
 
-type Props = {
-	machineData: IMachineData
-	setMachineData: (machine: IMachineData) => void
-	types: MachineType[]
-	loading?: boolean
-	error?: string
-}
-
-export const MachineForm = ({ machineData, setMachineData, types, loading, error }: Props) => {
+export const MachineForm = observer(() => {
+	const { id } = useParams()
+	const machineId = Number(id)
+	const linkTo = useNavigate()
+	const {
+		machineData,
+		setMachineData,
+		getMachineById,
+		getMachineTypes,
+		createMachine,
+		clearMachineData,
+	} = store.machines
+	const [loading, setLoading] = useState(false)
+	const [formError, setFormError] = useState('')
 	const [name, setMachineName] = useState(machineData.name)
-	const [type, setMachineType] = useState(machineData.type)
+	const [types, setMachineTypes] = useState([] as MachineType[])
 	const [weight, setMachineWeight] = useState(machineData.weight)
 	const [nickname, setMachineNickname] = useState(machineData.nickname)
 	const [licensePlate, setMachineLicensePlate] = useState(machineData.licensePlate)
 	useEffect(() => {
+		const start = async () => {
+			const allTypes = await getMachineTypes()
+			if (allTypes instanceof Error) {
+				setFormError(allTypes.message)
+				return
+			}
+			setMachineTypes(allTypes)
+			if (machineId) {
+				const currentMachine = await getMachineById(machineId)
+				if (currentMachine instanceof Error) {
+					return
+				}
+				setMachineData(currentMachine)
+			}
+		}
+		start()
+	}, [machineId])
+	const inputChange = (input: Partial<IMachineData>) => {
 		setMachineData({
 			...machineData,
-			name,
-			type,
-			weight,
-			nickname,
-			licensePlate,
+			...input,
 		})
-	}, [name, type, weight, nickname, licensePlate])
+	}
+	const submitHandler = async (e: any) => {
+		setLoading(true)
+		const createdMachine = await createMachine(machineData)
+		if (createdMachine instanceof Error) {
+			console.log(createdMachine)
+			setFormError(createdMachine.message)
+			setLoading(false)
+			return createdMachine
+		}
+		clearMachineData()
+		setFormError('')
+		setLoading(false)
+		return linkTo(`/machines/${createdMachine.id}`)
+	}
+	const onFinishFailed = (errorInfo: any) => {
+		console.log('Failed:', errorInfo)
+	}
+	const changeTypeHandler = (value: any, options: any) => {
+		// console.log(value, options)
+		setMachineData({ type: options })
+	}
 	return (
-		<Card>
-			<Title>
-				{`${machineData.name}` + (machineData.nickname ? `, ${machineData.nickname}` : '')}
-			</Title>
+		<Form
+			name='machine'
+			labelCol={{ span: 8 }}
+			wrapperCol={{ span: 16 }}
+			style={{ maxWidth: 600 }}
+			initialValues={{ remember: true }}
+			onFinish={submitHandler}
+			onFinishFailed={onFinishFailed}
+			autoComplete='off'
+		>
+			<h1>
+				{`${machineData.name || 'Новая машина'}` +
+					(machineData.nickname.length ? `, ${machineData.nickname}` : '')}
+			</h1>
+			<Form.Item>{machineData.name}</Form.Item>
 			<Divider />
 			<div>
-				<List.Item>
-					<Title>Наименование:</Title>
+				<Form.Item label='Наименование:'>
 					<Input
 						placeholder={machineData.name || 'Наименование'}
-						value={name}
-						onChange={(e) => setMachineName(e.target.value)}
+						value={machineData.name}
+						onChange={(e) => inputChange({ name: e.target.value })}
 						disabled={loading}
-						style={{ textAlign: 'left' }}
 					/>
-				</List.Item>
-				<List.Item>
-					<Title>Позывной:</Title>
+				</Form.Item>
+				{/* <Form.Item label='Телефон:'>
 					<Input
-						placeholder={nickname || 'Позывной'}
-						value={nickname}
-						onChange={(e) => setMachineNickname(e.target.value)}
+						placeholder='Введите номер телефона'
+						value={phone}
+						onChange={(e) => inputChange({ phone: e.target.value })}
 						disabled={loading}
 						style={{ textAlign: 'left' }}
 					/>
-				</List.Item>
-				<List.Item>
-					<Title>Вес, кг:</Title>
+				</Form.Item> */}
+				<Form.Item label='Позывной:'>
 					<Input
-						placeholder='12000'
-						value={weight}
-						onChange={(e) => setMachineWeight(e.target.value)}
-						disabled={loading}
-						style={{ textAlign: 'left' }}
-					/>
-				</List.Item>
-				<List.Item>
-					<Title>Тип: </Title>
-					{/* <Dropdown
-						style={styles.dropdown}
-						placeholderStyle={styles.placeholderStyle}
-						selectedTextStyle={styles.selectedTextStyle}
-						inputSearchStyle={styles.inputSearchStyle}
-						iconStyle={styles.iconStyle}
-						data={types.map((type) => {
-							return { label: type.name, value: type.id }
-						})}
-						search
-						maxHeight={300}
-						labelField='label'
-						valueField='value'
-						placeholder={type || 'Выберите тип'}
-						searchPlaceholder='Search...'
-						value={machineData.type}
-						onChange={(type) => setMachineType(type.label)}
-						renderLeftIcon={() => {
-							return <AntDesign style={styles.icon} color='black' name='Safety' size={20} />
+						placeholder='Кличка'
+						value={machineData.nickname}
+						onChange={(e) => {
+							inputChange({ nickname: e.target.value })
 						}}
-						renderItem={(item) => {
-							return (
-								<div style={styles.item}>
-									<p style={styles.textItem}>{item.label}</p>
-									{item.label === machineData.type && (
-										<AntDesign style={styles.icon} color='black' name='Safety' size={20} />
-									)}
-								</div>
-							)
-						}}
-						disable={loading}
-					/> */}
-				</List.Item>
-				<List.Item>
-					<Title>Гос. номер:</Title>
-					<Input
-						placeholder='А 000 АА 000'
-						value={licensePlate}
-						onChange={(e) => setMachineLicensePlate(e.target.value)}
 						disabled={loading}
 						style={{ textAlign: 'left' }}
 					/>
-				</List.Item>
+				</Form.Item>
+				<Form.Item label='Тип техники:'>
+					<Select
+						// mode='multiple'
+						// size={size}
+						placeholder='Выберите тип'
+						value={machineData.type.id || null}
+						onChange={changeTypeHandler}
+						style={{ width: '100%' }}
+						options={types}
+						fieldNames={{ label: 'name', value: 'id' }}
+					/>
+				</Form.Item>
+				{/* <Form.Item label='Комментарий:'>
+					<Input
+						placeholder={comment || 'Комментарий'}
+						value={comment}
+						onChange={(e) => {
+							inputChange({ comment: e.target.value })
+						}}
+						disabled={loading}
+						style={{ textAlign: 'left' }}
+					/>
+				</Form.Item> */}
 			</div>
-			{error && (
+			{formError && (
 				<>
 					<Divider />
-					<p style={{ color: 'red' }}>{error}</p>
+					<p style={{ color: 'red' }}>{formError}</p>
 				</>
 			)}
-		</Card>
+			<Form.Item>
+				<Space>
+					<Button
+						type='primary'
+						htmlType='submit'
+						className='login-form-button'
+						disabled={!machineData.name?.length}
+					>
+						Записать
+					</Button>
+					<Button type='primary' htmlType='reset' className='login-form-button' danger>
+						Отмена
+					</Button>
+				</Space>
+			</Form.Item>
+		</Form>
 	)
-}
+})
 
 // const styles = StyleSheet.create({
 // 	container: {

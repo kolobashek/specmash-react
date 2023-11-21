@@ -7,7 +7,7 @@ class MachinesStore {
 	auth = authStore
 	machines: IMachine[] | [] = []
 	machineData: IMachineDataStore = {
-		type: '',
+		type: { id: 0, name: '' },
 		name: '',
 		dimensions: '',
 		weight: '',
@@ -54,26 +54,35 @@ class MachinesStore {
 			if (machine instanceof Error) {
 				return machine
 			}
-			this.currentMachine = machine.equipment
+			// this.currentMachine = machine.equipment
+			console.log(machine)
 			return machine.equipment
 		} catch (error) {
 			return new Error(error as string)
 		}
 	}
-	setCurrentMachine(machine: IMachine | null) {
+	setCurrentMachine = (machine: IMachine | null) => {
+		console.log(machine)
 		this.currentMachine = machine
 	}
 	setMachineData = ({ type, name, dimensions, weight, licensePlate, nickname }: IMachineData) => {
-		this.machineData.type = type ?? this.machineData.type ?? ''
-		this.machineData.name = name ?? this.machineData.name ?? ''
-		this.machineData.dimensions = dimensions ?? this.machineData.dimensions ?? ''
-		this.machineData.weight = weight ?? this.machineData.weight ?? ''
-		this.machineData.licensePlate = licensePlate ?? this.machineData.licensePlate ?? ''
-		this.machineData.nickname = nickname ?? this.machineData.nickname ?? ''
+		type = type ?? this.machineData.type ?? ''
+		name = name ?? this.machineData.name ?? ''
+		dimensions = dimensions ?? this.machineData.dimensions ?? ''
+		weight = weight ?? this.machineData.weight ?? ''
+		licensePlate = licensePlate ?? this.machineData.licensePlate ?? ''
+		nickname = nickname ?? this.machineData.nickname ?? ''
+		// console.log(type)
+		this.machineData.type = type
+		this.machineData.name = name
+		this.machineData.dimensions = dimensions
+		this.machineData.weight = weight
+		this.machineData.licensePlate = licensePlate
+		this.machineData.nickname = nickname
 	}
 	clearMachineData = () => {
 		this.machineData = {
-			type: this.currentMachine?.type ?? '',
+			type: this.currentMachine?.type ?? { id: 0, name: '' },
 			name: this.currentMachine?.name ?? '',
 			dimensions: this.currentMachine?.dimensions ?? '',
 			weight: this.currentMachine?.weight?.toString() ?? '',
@@ -81,11 +90,17 @@ class MachinesStore {
 			nickname: this.currentMachine?.nickname ?? '',
 		}
 	}
-	createMachine = async (input: IMachineData) => {
-		const { weight, ...other } = input
+	createMachine = async (input: IMachineCreatePayload) => {
+		const { weight, type, ...other } = input
+		const payload = {
+			...other,
+			typeId: Number(type.id),
+			weight: Number(weight),
+		}
 		try {
+			// console.log(payload)
 			const response = (await graphqlRequest(Queries.createMachine, {
-				input: { weight: Number(weight), ...other },
+				input: payload,
 			})) as ICreateMachineResponse | Error
 			if (response instanceof Error) {
 				return response
@@ -113,9 +128,11 @@ class MachinesStore {
 
 export default new MachinesStore()
 
-export interface IMachine {
+export interface IMachine extends IMachineCreatePayload {
 	id: number
-	type: string
+}
+interface IMachineCreatePayload {
+	type: MachineType
 	name: string
 	dimensions?: string
 	weight?: string
@@ -142,7 +159,7 @@ export interface MachineType {
 	name: string
 }
 export interface IMachineData {
-	type?: string
+	type?: MachineType
 	name?: string
 	dimensions?: string
 	weight?: string
@@ -150,7 +167,7 @@ export interface IMachineData {
 	nickname?: string
 }
 interface IMachineDataStore {
-	type: string
+	type: MachineType
 	name: string
 	dimensions: string
 	weight: string

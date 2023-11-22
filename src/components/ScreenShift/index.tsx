@@ -7,8 +7,8 @@ import { ShiftsList } from './ShiftsList'
 import { useNavigate } from 'react-router-dom'
 import { FloatButton } from 'antd'
 
-export const ShiftScreen = observer(({ navigation }: any) => {
-	// экспорт компонента TableScreen как observer
+export const ScreenShift = observer(({ navigation }: any) => {
+	// экспорт компонента ScreenShift как observer
 	const linkTo = useNavigate()
 
 	const {
@@ -28,7 +28,7 @@ export const ShiftScreen = observer(({ navigation }: any) => {
 			{/* Компонент для горизонтальной прокрутки списка смен */}
 			<div>
 				<div>
-					<ShiftsList shiftsList={shifts} />
+					<ShiftsList />
 					{/* Кнопка фильтров */}
 					{/* <FloatButton
 						visible={shiftsTableFilter.onlyFull}

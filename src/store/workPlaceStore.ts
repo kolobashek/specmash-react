@@ -52,6 +52,7 @@ class WorkPlaceStore {
 
 		this.workPlaceData.name = name
 		this.workPlaceData.contacts = contacts
+		this.workPlaceData.address = address
 		this.workPlaceData.partners = partners
 	}
 	setCurrentWorkPlace(workPlace: IWorkPlace | null) {

@@ -7,48 +7,14 @@ import { IWorkPlace } from '../../store/workPlaceStore'
 import { WorkPlaceForm } from './WorkPlaceForm'
 import { IPartner } from '../../store/partnerStore'
 import { FloatButton } from 'antd'
+import { useNavigate, useParams } from 'react-router-dom'
 
-export const WorkPlaceNew = observer(() => {
-	const { createWorkPlace, clearWorkPlaceData, workPlaceData } = store.workPlaces
-
-	const [loading, setLoading] = useState(false)
-	const [updateError, setCreateError] = useState('')
-
-	const cancelHandler = () => {
-		// linkTo(`/workplaces/workPlaces`)
-	}
-	const createWorkPlaceSubmit = async () => {
-		setLoading(true)
-		const createdWorkPlace = await createWorkPlace(workPlaceData)
-		if (createdWorkPlace instanceof Error) {
-			console.log(createdWorkPlace)
-			setCreateError(createdWorkPlace.message)
-			setLoading(false)
-			return createdWorkPlace
-		}
-		clearWorkPlaceData()
-		setCreateError('')
-		setLoading(false)
-		// return linkTo(`/workplaces/workPlaces/${createdWorkPlace.id}`)
-	}
-	if (loading) return <p>Loading...</p>
+export const WorkPlaceEdit = observer(() => {
+	const linkTo = useNavigate()
+	const { id } = useParams()
 	return (
 		<>
-			<WorkPlaceForm error={updateError} loading={loading} />
-			<FloatButton
-				// visible={!loading}
-				onClick={createWorkPlaceSubmit}
-				// placement='left'
-				// icon={{ name: 'check', color: 'white' }}
-				// color='green'
-			/>
-			<FloatButton
-				// visible={!loading}
-				onClick={cancelHandler}
-				// placement='right'
-				// icon={{ name: 'cancel', color: 'white' }}
-				// color='red'
-			/>
+			<WorkPlaceForm />
 		</>
 	)
 })

@@ -9,7 +9,7 @@ import { IWorkPlace } from '../../store/workPlaceStore'
 import { IPartner } from '../../store/partnerStore'
 
 export const ShiftsFilter = observer(() => {
-	// экспорт компонента TableScreen как observer
+	// экспорт компонента ScreenShift как observer
 
 	const [visible, setVisible] = React.useState(true) // состояние для видимости компонента
 

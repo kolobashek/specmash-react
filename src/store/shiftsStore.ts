@@ -4,6 +4,7 @@ import Queries from '../services/api/queries'
 import _ from 'lodash'
 import authStore from './authStore'
 import { graphqlRequest } from '../services/api/graphql'
+import { ITableParams } from '../components/ScreenShift/ShiftsList'
 
 class ShiftsStore {
 	auth = authStore
@@ -28,6 +29,7 @@ class ShiftsStore {
 		onlyFull: [], // показывать только заполненные смены
 		onlyEmpty: [], // показывать только незаполненные смены
 	}
+	tableParams = {} as ITableParams
 	currentShift = {} as IShift
 	shiftsTableSortBy = 'date'
 	shifts: IShift[] = []
@@ -182,15 +184,27 @@ class ShiftsStore {
 
 	getShiftsFromApi = async () => {
 		try {
-			const res = (await graphqlRequest(Queries.getShifts, this.shiftsTableFilter, {
-				token: this.auth.token,
-			})) as IShiftsResponse | Error
+			const res = (await graphqlRequest(
+				Queries.getShifts,
+				this.tableParams || this.shiftsTableFilter
+				// {
+				// 	token: this.auth.token,
+				// }
+			)) as IShiftsResponse | Error
+			// console.log(res)
 			if (res instanceof Error) {
 				console.error(res)
-			} else this.shifts = res.travelLogs
+				return res
+			} else {
+				this.shifts = res.travelLogs
+				return res.travelLogs
+			}
 		} catch (error) {
 			return new Error(error as string)
 		}
+	}
+	setTableParamsConfirm = (tableParams: ITableParams) => {
+		this.tableParams = tableParams
 	}
 	setShiftData = async (shift: Partial<IShift>) => {
 		_.assign(this.shiftData, shift)
@@ -256,7 +270,10 @@ export interface IShift {
 	driver?: innerChildren
 	hours?: number
 	breaks?: number
-	comments?: string
+	comment?: string
+	createdAt?: string
+	updatedAt?: string
+	deletedAt?: string
 
 	[key: string]: string | number | undefined | innerChildren
 }

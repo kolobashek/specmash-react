@@ -6,7 +6,7 @@ import { WorkPlaceCard } from './WorkPlaceCard'
 import { redirect, useNavigate } from 'react-router-dom'
 import Link from 'antd/es/typography/Link'
 import { Avatar, Button, FloatButton, Input, List } from 'antd'
-import { UserOutlined } from '@ant-design/icons'
+import { PlusCircleOutlined, UserOutlined } from '@ant-design/icons'
 
 export const WorkPlacesList = observer(() => {
 	const linkTo = useNavigate()
@@ -128,15 +128,11 @@ export const WorkPlacesList = observer(() => {
 					)}
 				</div>
 			</div>
-			<Link href={'/workPlaces/new'}>
-				<FloatButton
-				// visible={visibleAddButton}
-				// onClick={() => linkTo('/workPlaces/new')}
-				// placement='right'
-				// icon={{ name: 'add', color: 'white' }}
-				// color='green'
-				/>
-			</Link>
+			<FloatButton
+				onClick={() => linkTo('/workPlaces/new')}
+				icon={<PlusCircleOutlined />}
+				tooltip='Добавить новый объект'
+			/>
 		</>
 	)
 })

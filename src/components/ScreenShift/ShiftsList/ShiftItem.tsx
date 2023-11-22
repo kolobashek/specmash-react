@@ -2,15 +2,13 @@ import React from 'react' // импорт React
 import store from '../../../store' // импорт хранилища
 import { observer } from 'mobx-react-lite' // импорт observer из mobx-react-lite
 import { IShift } from '../../../store/shiftsStore' // импорт интерфейса IShift
-import { ShiftItem } from './ShiftItem'
 
 interface Props {
-	shiftsList: IShift[]
+	item: IShift
 }
 
-export const ShiftsList = ({ shiftsList }: Props) => {
-	// экспорт компонента TableScreen как observer
-
+export const ShiftItem = observer(({ item }: Props) => {
+	const { id, date, shiftNumber, workPlace, equipment, driver, hours, breaks, comment } = item
 	const [visible, setVisible] = React.useState(true) // состояние для видимости компонента
 
 	const {
@@ -24,30 +22,20 @@ export const ShiftsList = ({ shiftsList }: Props) => {
 		removeEmptyShifts,
 	} = store.shifts
 
-	// Функция для переключения отображения только заполненных или всех смен
-	const showSchedule = () => {
-		// Переключаем фильтр только заполненных смен
-		// setShiftsFilterOnlyFull(!shiftsTableFilter.onlyFull)
-		// Если ранее были только заполненные смены, убираем пустые
-		if (shiftsTableFilter.onlyFull) {
-			removeEmptyShifts()
-		} else {
-			// Иначе добавляем обратно пустые смены
-			addEmptyShifts()
-		}
-	}
 	// Отрисовка компонента
 	return (
-		<>
-			{/* Компонент для горизонтальной прокрутки списка смен */}
-			<div>
-				{shiftsList.map((item) => {
-					return <ShiftItem item={item} key={item.id} />
-				})}
-			</div>
-		</>
+		<div key={id}>
+			<p>{date || '--'}</p>
+			<p>{shiftNumber || '--'}</p>
+			<p>{workPlace?.name || '--'}</p>
+			<p>{equipment?.name || '--'}</p>
+			<p>{driver?.name || '--'}</p>
+			<p>{hours || '--'}</p>
+			<p>{breaks || '--'}</p>
+			<p>{comment || '--'}</p>
+		</div>
 	)
-}
+})
 
 // const styles = StyleSheet.create({
 // 	container: {

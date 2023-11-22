@@ -2,7 +2,7 @@
 // import { observer } from 'mobx-react-lite'
 // import store from '../../store'
 
-// export const PartnersScreen = observer(() => {
+// export const ScreenPartners = observer(() => {
 // 	return (
 // 		<div>
 // 			<p>
@@ -27,7 +27,7 @@ import { PartnerCard } from './PartnerCard'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { Avatar, Button, FloatButton, List } from 'antd'
 import Link from 'antd/es/typography/Link'
-import { UserOutlined } from '@ant-design/icons'
+import { PlusCircleOutlined, UserOutlined } from '@ant-design/icons'
 
 export const PartnersList = observer(({ navigation }: any) => {
 	const navigate = useNavigate()
@@ -206,8 +206,9 @@ export const PartnersList = observer(({ navigation }: any) => {
 				</div>
 			</List>
 			<FloatButton
-				// visible={visibleAddButton}
 				onClick={() => navigate('/contragents/new')}
+				icon={<PlusCircleOutlined />}
+				tooltip='Добавить контрагента'
 			/>
 			<Outlet />
 		</>

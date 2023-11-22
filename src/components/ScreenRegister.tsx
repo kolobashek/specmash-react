@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import store from '../store'
 // import { registerUser } from '../services/api/auth'
 
-const RegisterScreen = () => {
+const ScreenRegister = () => {
 	const location = useLocation()
 	const params = new URLSearchParams(location.search)
 	const from = params.get('from') || '/'
@@ -146,4 +146,4 @@ const formItemLayout = {
 	},
 }
 
-export { RegisterScreen }
+export { ScreenRegister }

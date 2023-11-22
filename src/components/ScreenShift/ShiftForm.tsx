@@ -16,7 +16,7 @@ type Props = {
 }
 
 export const ShiftForm = observer(({ shiftId, error, loading }: Props) => {
-	// экспорт компонента TableScreen как observer
+	// экспорт компонента ScreenShift как observer
 
 	const {
 		// деструктуризация нужных методов из store

@@ -2,6 +2,8 @@ export const shifts = {
 	getShifts: /* GraphQL */ `
 		query travelLogs($dateStart: String, $dateEnd: String) {
 			travelLogs(dateStart: $dateStart, dateEnd: $dateEnd) {
+				# query travelLogs() {
+				# 	travelLogs() {
 				id
 				driver {
 					id
@@ -20,6 +22,9 @@ export const shifts = {
 				hours
 				breaks
 				comment
+				createdAt
+				updatedAt
+				deletedAt
 			}
 		}
 	`,

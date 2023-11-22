@@ -5,7 +5,7 @@ import { Link, redirect, useLocation, useNavigate } from 'react-router-dom'
 import store from '../store'
 import { observer } from 'mobx-react-lite'
 
-const LoginScreen = observer(() => {
+const ScreenLogin = observer(() => {
 	const location = useLocation()
 	const params = new URLSearchParams(location.search)
 	const from = params.get('from') || '/'
@@ -130,4 +130,4 @@ const LoginScreen = observer(() => {
 // 	},
 // })
 
-export { LoginScreen }
+export { ScreenLogin }

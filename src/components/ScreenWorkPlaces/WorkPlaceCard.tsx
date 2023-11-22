@@ -39,7 +39,7 @@ export const WorkPlaceCard = observer(({ navigation }: any) => {
 	const [updateError, setUpdateError] = useState('')
 
 	const editWorkPlaceHandler = () => {
-		linkTo(`/workplaces/workPlaces/${workPlaceId}/edit`)
+		linkTo(`/workplaces/${workPlaceId}/edit`)
 	}
 	const editWorkPlaceSubmit = async (id: number) => {
 		setLoading(true)

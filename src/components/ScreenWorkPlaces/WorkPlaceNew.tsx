@@ -7,64 +7,34 @@ import { IWorkPlace } from '../../store/workPlaceStore'
 import { WorkPlaceForm } from './WorkPlaceForm'
 import { IPartner } from '../../store/partnerStore'
 import { FloatButton } from 'antd'
-import { useNavigate, useParams } from 'react-router-dom'
 
-export const WorkPlaceEdit = observer(({ navigation }: any) => {
-	const linkTo = useNavigate()
-	const { id } = useParams()
-	const {
-		createWorkPlace,
-		clearWorkPlaceData,
-		setWorkPlaceData,
-		workPlaceData,
-		getWorkPlaceById,
-		setCurrentWorkPlace,
-		updateWorkPlace,
-	} = store.workPlaces
-	const workPlaceId = Number(id)
-	console.log(navigation.getState().routes)
+export const WorkPlaceNew = observer(() => {
+	const { createWorkPlace, clearWorkPlaceData, workPlaceData } = store.workPlaces
+
 	const [loading, setLoading] = useState(false)
 	const [updateError, setCreateError] = useState('')
-	const [allContAgents, setAllContAgents] = useState([] as IPartner[])
-	const { getPartners } = store.partners
-
-	useEffect(() => {
-		const start = async () => {
-			const objFromApi = await getWorkPlaceById(workPlaceId)
-			if (objFromApi instanceof Error) {
-				return linkTo(`/workplaces/workPlaces/${workPlaceId}`)
-			}
-			const partnersFromApi = await getPartners()
-			if (partnersFromApi instanceof Error) {
-				return
-			}
-			setAllContAgents(partnersFromApi)
-			setWorkPlaceData(objFromApi)
-		}
-		start()
-	}, [])
 
 	const cancelHandler = () => {
-		linkTo(`/workplaces/workPlaces/${workPlaceId}`)
+		// linkTo(`/workplaces/workPlaces`)
 	}
 	const createWorkPlaceSubmit = async () => {
 		setLoading(true)
-		const updatedWorkPlace = await updateWorkPlace({ id: workPlaceId, ...workPlaceData })
-		if (updatedWorkPlace instanceof Error) {
-			console.log(updatedWorkPlace)
-			setCreateError(updatedWorkPlace.message)
+		const createdWorkPlace = await createWorkPlace(workPlaceData)
+		if (createdWorkPlace instanceof Error) {
+			console.log(createdWorkPlace)
+			setCreateError(createdWorkPlace.message)
 			setLoading(false)
-			return updatedWorkPlace
+			return createdWorkPlace
 		}
+		clearWorkPlaceData()
 		setCreateError('')
-		setCurrentWorkPlace(updatedWorkPlace)
 		setLoading(false)
-		return linkTo(`/workPlaces/${updatedWorkPlace.id}`)
+		// return linkTo(`/workplaces/workPlaces/${createdWorkPlace.id}`)
 	}
 	if (loading) return <p>Loading...</p>
 	return (
 		<>
-			<WorkPlaceForm workPlaceId={workPlaceId} error={updateError} loading={loading} />
+			<WorkPlaceForm />
 		</>
 	)
 })

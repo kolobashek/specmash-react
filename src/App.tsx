@@ -14,10 +14,10 @@ import { Button, Drawer, Radio, Space, Layout, Breadcrumb } from 'antd'
 import { MenuOutlined } from '@ant-design/icons'
 import store from './store'
 import {
-	RegisterScreen,
-	LoginScreen,
-	ShiftScreen,
-	InfoScreen,
+	ScreenRegister,
+	ScreenLogin,
+	ScreenShift,
+	ScreenInfo,
 	PartnersList,
 	UsersList,
 	PartnerCard,
@@ -25,7 +25,7 @@ import {
 	MachineCard,
 	MachineEdit,
 	MachineNew,
-	ScheduleScreen,
+	ScreenSchedule,
 	PartnerEdit,
 	PartnerNew,
 	UserNew,
@@ -191,13 +191,13 @@ const router = createBrowserRouter([
 				path: 'login',
 				// action: loginAction,
 				loader: loginLoader,
-				element: <LoginScreen />,
+				element: <ScreenLogin />,
 			},
 			{
 				path: 'register',
 				// action: loginAction,
 				loader: loginLoader,
-				element: <RegisterScreen />,
+				element: <ScreenRegister />,
 			},
 			{
 				path: 'users',
@@ -310,51 +310,51 @@ const router = createBrowserRouter([
 				children: [
 					{
 						index: true,
-						element: <ShiftScreen />,
+						element: <ScreenShift />,
 					},
 					{
 						path: ':id',
 						loader: protectedLoader,
-						element: <ShiftScreen />,
+						element: <ScreenShift />,
 					},
 					{
 						path: ':id/edit',
 						loader: protectedLoader,
-						element: <ShiftScreen />,
+						element: <ScreenShift />,
 					},
 					{
 						path: 'new',
 						loader: protectedLoader,
-						element: <ShiftScreen />,
+						element: <ScreenShift />,
 					},
 				],
 			},
 			{
 				path: 'schedule',
 				loader: protectedLoader,
-				element: <ScheduleScreen />,
+				element: <ScreenSchedule />,
 				children: [
 					{
 						path: ':id',
 						loader: protectedLoader,
-						element: <ScheduleScreen />,
+						element: <ScreenSchedule />,
 					},
 					{
 						path: ':id/edit',
 						loader: protectedLoader,
-						element: <ScheduleScreen />,
+						element: <ScreenSchedule />,
 					},
 					{
 						path: 'new',
 						loader: protectedLoader,
-						element: <ScheduleScreen />,
+						element: <ScreenSchedule />,
 					},
 				],
 			},
 			{
 				path: 'info',
 				loader: protectedLoader,
-				element: <InfoScreen />,
+				element: <ScreenInfo />,
 			},
 		],
 	},

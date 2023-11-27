@@ -1,24 +1,56 @@
-# Project
+# Specmash
 
 Project Description
 
-<em>[TODO.md spec & Kanban Board](https://bit.ly/3fCwKfM)</em>
+## Requirements
 
 ### Idea
 
-- [ ] Antd Result  
+- [ ] Antd Result after all mutations  
 
 ### Todo
 
-- [ ] Shift  
+- [ ] Shift create  
+- [ ] Shift update  
+- [ ] Shift delete  
+- [ ] Shift list count  
+- [ ] Shift list limit  
+- [ ] Shift list filter  
+- [ ] Machine delete  
+- [ ] Machine list count  
+- [ ] Machine list limit  
+- [ ] Machine list filter  
+- [ ] Partner delete  
+- [ ] Partner list count  
+- [ ] Partner list limit  
+- [ ] Partner list filter  
+- [ ] WorkPlace delete  
+- [ ] WorkPlace list count  
+- [ ] WorkPlace list limit  
+- [ ] WorkPlace list filter  
+- [ ] User update  
+- [ ] User delete  
+- [ ] User list count  
+- [ ] User list limit  
+- [ ] User list filter  
 
 ### In Progress
 
-- [ ] Machine  
-- [ ] Partner  
-- [ ] WorkPlace  
-- [ ] User  
+- [ ] User create  
+
+### For Testing
+
+- [ ] Roles permissions  
+- [ ] Partner update  
+- [ ] Partner create  
+- [ ] WorkPlace update  
+- [ ] WorkPlace create  
+- [ ] Machine update  
+- [ ] Machine create  
+- [ ] Register  
+- [ ] Login  
 
 ### Done ✓
 
+- [x] new userForm roles default value is 0  
 

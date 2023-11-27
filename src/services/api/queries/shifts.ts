@@ -19,7 +19,7 @@ export const shifts = {
 				}
 				date
 				shiftNumber
-				hours
+				hoursWorked
 				breaks
 				comment
 				createdAt

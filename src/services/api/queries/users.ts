@@ -1,10 +1,4 @@
 export const users = {
-	isActive: /* GraphQL */ `
-		query isActive($userId: ID!) {
-			isActive(userId: $userId)
-		}
-	`,
-
 	getRoles: /* GraphQL */ `
 		query getRoles {
 			roles {
@@ -15,24 +9,9 @@ export const users = {
 	`,
 
 	createUser: /* GraphQL */ `
-		mutation CreateUser(
-			$phone: String!
-			$name: String!
-			$nickname: String
-			$comment: String
-			$roles: [Int]
-			$isActive: String
-		) {
-			createEquipment(
-				phone: $phone
-				name: $name
-				nickname: $nickname
-				comment: $comment
-				isActive: $isActive
-				roles: $roles
-			) {
+		mutation createUser($input: CreateUserInput!) {
+			createUser(input: $input) {
 				id
-				password
 			}
 		}
 	`,
@@ -49,7 +28,9 @@ export const users = {
 					id
 					name
 				}
-				isActive
+				createdAt
+				updatedAt
+				deletedAt
 			}
 		}
 	`,
@@ -66,7 +47,9 @@ export const users = {
 					id
 					name
 				}
-				isActive
+				createdAt
+				updatedAt
+				deletedAt
 			}
 		}
 	`,
@@ -82,7 +65,9 @@ export const users = {
 					id
 					name
 				}
-				isActive
+				createdAt
+				updatedAt
+				deletedAt
 			}
 		}
 	`,

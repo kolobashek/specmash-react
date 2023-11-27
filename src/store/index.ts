@@ -13,9 +13,13 @@ class Store {
 	users = usersStore
 	partners = partnerStore
 	workPlaces = workPlaceStore
+	headerContent = ''
 
 	constructor() {
 		makeAutoObservable(this)
+	}
+	setHeaderContent = (headerContent: string) => {
+		this.headerContent = headerContent
 	}
 }
 

@@ -1,1 +1,1 @@
-export * from './StickyHeader'
+export * from './Header'

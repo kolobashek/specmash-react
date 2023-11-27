@@ -1,33 +1,34 @@
 import React, { useEffect, useState } from 'react'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
-import { StickyHeader } from '../UIkit'
 import { localizedRoleName } from '../../utils'
 import { IRole, IUserData } from '../../store/usersStore'
 import { Button, Divider, Form, Input, Select, Space } from 'antd'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
-type Props = {
-	submitHandler: (values?: any) => void
-	loading?: boolean
-	error?: string
-}
-
-export const UserForm = ({ loading, error, submitHandler }: Props) => {
+export const UserForm = observer(() => {
 	const { id } = useParams()
 	const userId = Number(id)
+	const linkTo = useNavigate()
+	const { createUser, clearUserData, setUserData, getRoles, userData, updateUser, getUserById } =
+		store.users
+	const [loading, setLoading] = useState(false)
+	const [updateError, setCreateError] = useState('')
 	const [allRoles, setAllRoles] = useState([] as IRole[])
-	const { userData, setUserData, getUserById } = store.users
 	useEffect(() => {
 		const start = async () => {
-			const rolesFromApi = await store.users.getRoles()
-			if (rolesFromApi instanceof Error) {
-				return
-			}
-			setAllRoles(rolesFromApi)
-			if (userId) {
-				const initialData = await getUserById(userId)
-				setUserData(initialData)
+			try {
+				const rolesFromApi = await getRoles()
+				if (rolesFromApi instanceof Error) {
+					return
+				}
+				setAllRoles(rolesFromApi)
+				if (userId) {
+					const initialData = await getUserById(userId)
+					setUserData(initialData)
+				}
+			} catch (error) {
+				console.error(error)
 			}
 		}
 		start()
@@ -42,8 +43,35 @@ export const UserForm = ({ loading, error, submitHandler }: Props) => {
 	const onFinishFailed = (errorInfo: any) => {
 		console.log('Failed:', errorInfo)
 	}
-	const changeRolesHandler = (value: any, options: any) => {
-		setUserData({ roles: options })
+	const changeRolesHandler = (value: number[]) => {
+		console.log(value)
+		const roles = value.map((_) => {
+			return allRoles.filter((role) => role.id === _)[0]
+		})
+		setUserData({ roles })
+	}
+	const submitHandler = async () => {
+		const { phone, name, roles } = userData
+		if (phone && name && roles) {
+			setLoading(true)
+			let response
+			if (userId) {
+				response = await updateUser({ ...userData, phone, name, roles, id: userId })
+			} else {
+				response = await createUser({ ...userData, phone, name, roles })
+			}
+			if (response instanceof Error) {
+				// console.log(response)
+				setCreateError(response.message)
+				setLoading(false)
+				return response
+			}
+			clearUserData()
+			setCreateError('')
+			setLoading(false)
+			return linkTo(`/users/${response.id}`)
+		}
+		setCreateError('Заполните обязательные поля')
 	}
 	return (
 		<Form
@@ -55,6 +83,9 @@ export const UserForm = ({ loading, error, submitHandler }: Props) => {
 			onFinish={submitHandler}
 			onFinishFailed={onFinishFailed}
 			autoComplete='off'
+			onFocus={() => {
+				setCreateError('')
+			}}
 		>
 			<h1>Пользователь</h1>
 			<Form.Item>{userData.name}</Form.Item>
@@ -66,6 +97,7 @@ export const UserForm = ({ loading, error, submitHandler }: Props) => {
 						value={name}
 						onChange={(e) => inputChange({ name: e.target.value })}
 						disabled={loading}
+						required
 					/>
 				</Form.Item>
 				<Form.Item label='Телефон:'>
@@ -75,6 +107,7 @@ export const UserForm = ({ loading, error, submitHandler }: Props) => {
 						onChange={(e) => inputChange({ phone: e.target.value })}
 						disabled={loading}
 						style={{ textAlign: 'left' }}
+						required
 					/>
 				</Form.Item>
 				<Form.Item label='Позывной:'>
@@ -91,13 +124,19 @@ export const UserForm = ({ loading, error, submitHandler }: Props) => {
 				<Form.Item label='Роли:'>
 					<Select
 						mode='multiple'
-						// size={size}
 						placeholder='Выберите роли'
-						value={roles.map((role) => role.id)}
+						value={roles?.map((role) => role.id)}
 						onChange={changeRolesHandler}
 						style={{ width: '100%' }}
-						options={allRoles}
-						fieldNames={{ label: 'name', value: 'id' }}
+						options={allRoles.map((role) => {
+							return { value: role.id, label: localizedRoleName(role.name) || '' }
+						})}
+						allowClear
+						aria-required
+						// fieldNames={{
+						// 	label: 'name',
+						// 	value: 'id',
+						// }}
 					/>
 				</Form.Item>
 				<Form.Item label='Комментарий:'>
@@ -112,10 +151,10 @@ export const UserForm = ({ loading, error, submitHandler }: Props) => {
 					/>
 				</Form.Item>
 			</div>
-			{error && (
+			{updateError && (
 				<>
 					<Divider />
-					<p style={{ color: 'red' }}>{error}</p>
+					<p style={{ color: 'red' }}>{updateError}</p>
 				</>
 			)}
 			<Form.Item>
@@ -124,7 +163,7 @@ export const UserForm = ({ loading, error, submitHandler }: Props) => {
 						type='primary'
 						htmlType='submit'
 						className='login-form-button'
-						disabled={!userData.name?.length}
+						disabled={!userData.name?.length || !userData.phone?.length || !userData.roles?.length}
 					>
 						Записать
 					</Button>
@@ -135,4 +174,4 @@ export const UserForm = ({ loading, error, submitHandler }: Props) => {
 			</Form.Item>
 		</Form>
 	)
-}
+})

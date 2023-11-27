@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
-import { StickyHeader } from '../UIkit'
+
 import { localizedRoleName } from '../../utils'
 import { IMachine } from '../../store/machinesStore'
 import { MachineForm } from './MachineForm'

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import qs from 'qs'
 import { Table } from 'antd'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import type { FilterValue, SorterResult } from 'antd/es/table/interface'
@@ -14,19 +13,6 @@ export interface ITableParams {
 	filters?: Record<string, FilterValue | null>
 }
 
-// id: number
-// date: string
-// shiftNumber: number
-// workPlace?: innerChildren
-// partner?: innerChildren
-// equipment?: innerChildren
-// driver?: innerChildren
-// hours?: number
-// breaks?: number
-// comments?: string
-// createdAt?: string
-// updatedAt?: string
-// deletedAt?: string
 const columns: ColumnsType<IShift> = [
 	{
 		title: 'Дата',
@@ -69,7 +55,7 @@ const columns: ColumnsType<IShift> = [
 	},
 	{
 		title: 'Время',
-		dataIndex: 'hours',
+		dataIndex: 'hoursWorked',
 		sorter: true,
 	},
 	{
@@ -134,8 +120,6 @@ const ShiftsList: React.FC = observer(() => {
 			filters,
 			...sorter,
 		})
-
-		// `dataSource` is useless since `pageSize` changed
 		if (pagination.pageSize !== tableParams.pagination?.pageSize) {
 			setData([])
 		}

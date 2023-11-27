@@ -268,7 +268,7 @@ export interface IShift {
 	partner?: innerChildren
 	equipment?: innerChildren
 	driver?: innerChildren
-	hours?: number
+	hoursWorked?: number
 	breaks?: number
 	comment?: string
 	createdAt?: string

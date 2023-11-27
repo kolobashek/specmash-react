@@ -5,7 +5,7 @@ import { localizedRoleName } from '../../utils'
 import { IMachine } from '../../store/machinesStore'
 import { MachineForm } from './MachineForm'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Card, Divider, FloatButton, List } from 'antd'
+import { Card, Divider, FloatButton, List, Typography } from 'antd'
 import Title from 'antd/es/typography/Title'
 
 export const MachineCard = observer(() => {
@@ -71,26 +71,24 @@ export const MachineCard = observer(() => {
 	if (loading) return <p>Loading...</p>
 	if (!currentMachine) return <p>Что-то пошло не так.</p>
 	// if (!visibleEditButton) return <MachineForm id={currentMachine.id} />
+	const { name, nickname, type, weight, licensePlate } = currentMachine
 	return (
 		<>
 			<Card>
-				<Title>
-					{`${currentMachine.name}` +
-						(currentMachine.nickname ? `, ${currentMachine.nickname}` : '')}
-				</Title>
+				<Title>{`${name}` + (nickname ? `, ${nickname}` : '')}</Title>
 				<Divider />
 				<div>
 					<List.Item>
 						<Title>Вес, кг:</Title>
-						<p>{`${currentMachine.weight}`}</p>
+						<Typography.Text>{`${weight ? weight : ''}`}</Typography.Text>
 					</List.Item>
 					<List.Item>
 						<Title>Тип: </Title>
-						<p>{`${currentMachine.type.name}`}</p>
+						<p>{`${type.name ? type.name : ''}`}</p>
 					</List.Item>
 					<List.Item>
 						<Title>Гос. номер:</Title>
-						<p>{`${currentMachine.licensePlate ? currentMachine.licensePlate : ''}`}</p>
+						<p>{`${licensePlate ? licensePlate : ''}`}</p>
 					</List.Item>
 				</div>
 			</Card>

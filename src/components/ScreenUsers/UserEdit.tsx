@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
-import { StickyHeader } from '../UIkit'
+
 import { localizedRoleName } from '../../utils'
 import { IUser } from '../../store/usersStore'
 import { UserForm } from './UserForm'
@@ -31,25 +31,25 @@ export const UserEdit = observer(() => {
 	const [updateError, setCreateError] = useState('')
 
 	const updateUserSubmit = async () => {
-		setLoading(true)
-		const updatedUser = await updateUser({ ...userData, id: userId })
-		if (updatedUser instanceof Error) {
-			console.log(updatedUser)
-			setCreateError(updatedUser.message)
+		const { phone, name, roles } = userData
+		if (phone && name && roles) {
+			setLoading(true)
+			const updatedUser = await updateUser({ ...userData, phone, name, roles, id: userId })
+			if (updatedUser instanceof Error) {
+				console.log(updatedUser)
+				setCreateError(updatedUser.message)
+				setLoading(false)
+				return updatedUser
+			}
+			setCreateError('')
+			setCurrentUser(updatedUser)
 			setLoading(false)
-			return updatedUser
+			return linkTo(`/users/${updatedUser.id}`)
 		}
-		setCreateError('')
-		setCurrentUser(updatedUser)
-		setLoading(false)
-		return linkTo(`/users/${updatedUser.id}`)
+		setCreateError('Заполните все необходимые поля')
 	}
 	if (loading) return <p>Loading...</p>
-	return (
-		<>
-			<UserForm error={updateError} loading={loading} submitHandler={updateUserSubmit} />
-		</>
-	)
+	return <UserForm />
 })
 
 // const styles = StyleSheet.create({

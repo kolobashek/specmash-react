@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
-import { useNavigate } from 'react-router-dom'
-import { FloatButton } from 'antd'
-import { PlusCircleOutlined } from '@ant-design/icons'
+import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { Avatar, Breadcrumb, FloatButton, List } from 'antd'
+import { PlusCircleOutlined, UserOutlined } from '@ant-design/icons'
 
 export const MachinesList = observer(() => {
 	const {
@@ -24,7 +24,7 @@ export const MachinesList = observer(() => {
 	const [loading, setLoading] = useState(false)
 	const [isVisibleBS, setIsVisibleBS] = useState(false)
 	const addMachineHandler = async () => {
-		setVisibleAddButton(false)
+		linkTo('/machines/new')
 	}
 	const addMachineSubmit = async () => {
 		setLoading(true)
@@ -66,9 +66,65 @@ export const MachinesList = observer(() => {
 	// ]
 	return (
 		<>
-			<div>
-				<div>
-					{/* {machines.map((machine) => {
+			<Breadcrumb
+				separator='>'
+				items={[
+					{
+						title: 'Главная',
+						href: '/',
+					},
+					{
+						title: 'Машины',
+					},
+				]}
+			/>
+			<List
+				itemLayout='horizontal'
+				dataSource={machines}
+				style={{
+					maxWidth: 600,
+					margin: '0 auto',
+				}}
+				renderItem={(machine) => {
+					return (
+						<List.Item
+							actions={[
+								<Link key='1' to={`/machines/${machine.id}`}>
+									Подробнее
+								</Link>,
+								<Link key='2' to={`/machines/${machine.id}/edit`}>
+									Изменить
+								</Link>,
+							]}
+						>
+							<List.Item.Meta
+								avatar={
+									<Avatar
+										size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
+										icon={<UserOutlined />}
+									>
+										{machine.name[0]}
+									</Avatar>
+								}
+								title={
+									<Link to={`/machines/${machine.id}`} key={machine.id}>
+										{machine.name}
+									</Link>
+								}
+								description={`Тип: ${machine.type.name}`}
+							/>
+						</List.Item>
+					)
+				}}
+			/>
+			<Outlet />
+			<FloatButton
+				onClick={addMachineHandler}
+				icon={<PlusCircleOutlined />}
+				tooltip='Добавить пользователя'
+			/>
+		</>
+		/* {machines.map((machine) => {
 						return (
 							<Link
 								to={
@@ -91,8 +147,8 @@ export const MachinesList = observer(() => {
 								</ListItem>
 							</Link>
 						)
-					})} */}
-					{/* {!visibleAddButton && (
+					})}
+					{!visibleAddButton && (
 						<>
 							<div style={[styles.row]}>
 								<div style={styles.cell}>
@@ -169,7 +225,7 @@ export const MachinesList = observer(() => {
 								/>
 							</div>
 						</>
-					)} */}
+					)}
 				</div>
 			</div>
 			<FloatButton
@@ -178,7 +234,7 @@ export const MachinesList = observer(() => {
 				tooltip='Добавить'
 				type='primary'
 			/>
-		</>
+		</> */
 	)
 })
 

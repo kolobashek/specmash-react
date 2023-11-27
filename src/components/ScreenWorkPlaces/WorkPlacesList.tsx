@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
-import { StickyHeader } from '../UIkit'
+
 import { WorkPlaceCard } from './WorkPlaceCard'
 import { redirect, useNavigate } from 'react-router-dom'
 import Link from 'antd/es/typography/Link'

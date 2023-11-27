@@ -20,7 +20,10 @@ export const machines = {
 		query getEquipments {
 			equipments {
 				id
-				type
+				type {
+					id
+					name
+				}
 				name
 				dimensions
 				weight

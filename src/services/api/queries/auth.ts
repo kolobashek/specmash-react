@@ -1,7 +1,7 @@
 export const auth = {
 	register: /* GraphQL */ `
-		mutation createUser($input: CreateUserInput!) {
-			createUser(input: $input)
+		mutation register($input: RegisterUserInput!) {
+			register(input: $input)
 		}
 	`,
 
@@ -19,8 +19,10 @@ export const auth = {
 						id
 						name
 					}
-					isActive
 					comment
+					createdAt
+					updatedAt
+					deletedAt
 				}
 			}
 		}
@@ -38,8 +40,10 @@ export const auth = {
 					id
 					name
 				}
-				isActive
 				comment
+				createdAt
+				updatedAt
+				deletedAt
 			}
 		}
 	`,

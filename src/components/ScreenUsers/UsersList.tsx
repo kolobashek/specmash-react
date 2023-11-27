@@ -1,34 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
-import { StickyHeader } from '../UIkit'
 // import { DrawerScreenProps } from '@react-navigation/drawer'
-import { UserCard } from './UserCard'
 import { Avatar, Breadcrumb, FloatButton, List } from 'antd'
 import { PlusCircleOutlined, UserOutlined } from '@ant-design/icons'
 import { useNavigate, Link, Outlet } from 'react-router-dom'
 
-export const UsersList = observer(({ navigation }: any) => {
+export const UsersList = observer(() => {
 	document.title = 'Список пользователей'
-	const { list, userData, roles, setUserData, createUser, clearUserData, getUsers } = store.users
+	const { users, setHeaderContent } = store
+	const { list, getUsers } = users
 	const navigate = useNavigate()
 	useEffect(() => {
 		getUsers()
+		setHeaderContent('search')
+		return () => {
+			setHeaderContent('default')
+		}
 	}, [])
 
-	const [visibleAddButton, setVisibleAddButton] = useState(true)
-	const [loading, setLoading] = useState(false)
-	const [isVisibleBS, setIsVisibleBS] = useState(false)
-	const [isActive, setIsActive] = useState(false)
 	const addUserHandler = async () => {
 		navigate('/users/new')
-	}
-	const cancelHandler = () => {
-		setVisibleAddButton(true)
-	}
-	const isActiveHandler = () => {
-		setIsActive(!isActive)
-		setUserData({ isActive: !isActive })
 	}
 	const memoizedRoleName = React.useMemo(() => {
 		return (role: string | undefined) => {

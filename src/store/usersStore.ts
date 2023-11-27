@@ -1,30 +1,26 @@
 import { makeAutoObservable } from 'mobx'
 import Queries from '../services/api/queries'
 import { graphqlRequest } from '../services/api/graphql'
+import { localizedRoleName } from '../utils'
 
 class UsersStore {
-	list: IUser[] | [] = []
-	userData: IUser = {
-		id: 0,
-		phone: '',
-		name: '',
-		nickname: '',
-		comment: '',
-		roles: [{ id: 0, name: '' }],
-		isActive: false,
-	}
-	roles: IRole[] = []
+	list = [] as IUser[]
+	userData = {
+		roles: [] as IRole[],
+	} as IUserData
+	roles = [] as IRole[]
 	currentUser: IUser | null = null
+	usersFilter = { limit: 50, offset: 0 } as IUsersFilter
 
 	constructor() {
 		makeAutoObservable(this)
 		this.getRoles()
 	}
-	getUsers = async (payload: GetUsersPayloadInput = {}) => {
+	getUsers = async (filter?: IUsersFilter) => {
 		try {
-			const users = (await graphqlRequest(Queries.getUsers, { input: payload })) as
-				| UsersResponse
-				| Error
+			const users = (await graphqlRequest(Queries.getUsers, {
+				input: { ...this.usersFilter, ...filter },
+			})) as UsersResponse | Error
 			if (users instanceof Error) {
 				return users
 			}
@@ -34,11 +30,9 @@ class UsersStore {
 			return new Error(error as string)
 		}
 	}
-	roleName = (role: string | undefined) => {
-		if (role === 'admin') return 'Администратор'
-		if (role === 'manager') return 'Менеджер'
-		if (role === 'user') return 'Водитель'
-		return 'Не назначена'
+	roleName = (role: string | number | undefined) => {
+		if (!role) return null
+		return localizedRoleName(role)
 	}
 	getUserById = async (id: number) => {
 		try {
@@ -65,44 +59,42 @@ class UsersStore {
 			return new Error(error as string)
 		}
 	}
-	setUserData = ({ phone, name, nickname, comment, roles, isActive }: IUserData) => {
+	setUserData = ({ phone, name, nickname, comment, roles }: IUserData) => {
 		// console.log(comment)
 		phone = phone ?? this.userData.phone ?? ''
 		name = name ?? this.userData.name ?? ''
 		nickname = nickname ?? this.userData.nickname ?? ''
 		comment = comment ?? this.userData.comment ?? ''
 		roles = roles ?? this.userData.roles ?? [{ id: 0, name: '' }]
-		isActive = isActive ?? this.userData.isActive ?? false
 
 		this.userData.phone = phone
 		this.userData.name = name
 		this.userData.nickname = nickname
 		this.userData.comment = comment
 		this.userData.roles = roles
-		this.userData.isActive = isActive
 	}
-	setCurrentUser(user: IUser | null) {
+	setCurrentUser = (user: IUser | null) => {
 		this.currentUser = user
+	}
+	setUserFilter = (filter: Partial<IUsersFilter>) => {
+		this.usersFilter = {
+			...this.usersFilter,
+			...filter,
+		}
 	}
 	clearUserData = () => {
 		this.userData = {
-			id: 0,
-			phone: '',
-			name: '',
-			nickname: '',
-			comment: '',
-			roles: [{ id: 0, name: '' }],
-			isActive: false,
-		}
+			roles: [] as IRole[],
+		} as IUserData
 	}
-	createUser = async (userData: IUserData) => {
+	createUser = async (userData: Omit<IUser, 'id'>) => {
 		try {
 			let payload = { ...userData, roles: [] as number[] }
 			if (userData.roles?.length) {
 				const roles = userData.roles.map((role) => role.id)
 				payload = { ...userData, roles }
 			}
-			const response = (await graphqlRequest(Queries.createUser, payload)) as
+			const response = (await graphqlRequest(Queries.createUser, { input: payload })) as
 				| ICreateUserResponse
 				| Error
 			if (response instanceof Error) {
@@ -126,6 +118,19 @@ class UsersStore {
 			return new Error(error as string)
 		}
 	}
+	userSearch = async (text: string) => {
+		try {
+			const response = (await graphqlRequest(Queries.getUsers, { search: text })) as
+				| UsersResponse
+				| Error
+			if (response instanceof Error) {
+				return response
+			}
+			return response.users
+		} catch (error) {
+			return new Error(error as string)
+		}
+	}
 }
 
 export default new UsersStore()
@@ -136,11 +141,30 @@ export interface IUser extends IUserData {
 	name: string
 	roles: IRole[]
 }
-interface UsersResponse {
-	users: IUser[]
+export interface IUserData {
+	phone?: string
+	name?: string
+	nickname?: string
+	comment?: string
+	roles?: IRole[]
+}
+export interface IRole {
+	id: number
+	name: string
+}
+interface GetUsersPayloadInput {
+	id?: number
+	phone?: string
+	name?: string
+	limit?: number
+	offset?: number
+	roles?: number[]
 }
 interface UserResponse {
 	user: IUser
+}
+interface UsersResponse {
+	users: IUser[]
 }
 interface UpdateUserResponse {
 	updateUser: IUser
@@ -151,26 +175,15 @@ interface ICreateUserResponse {
 interface RolesResponse {
 	roles: IRole[]
 }
-export interface IUserData {
+interface IUsersFilter {
 	phone?: string
 	name?: string
-	nickname?: string
-	comment?: string
-	roles?: IRole[]
-	isActive?: boolean
-}
-export interface IRole {
-	id: number
-	name: string
-}
-interface GetUsersPayload {
-	input: GetUsersPayloadInput
-}
-interface GetUsersPayloadInput {
-	id?: number
-	phone?: string
-	name?: string
+	roles?: number[]
 	limit?: number
 	offset?: number
-	roles?: number[]
+	deleted?: boolean
+	createdAt?: string
+	sort?: string
+	order?: string
+	search?: string
 }

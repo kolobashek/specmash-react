@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { FloatButton, Card, List, Typography } from 'antd'
 import store from '../../store'
 import { observer } from 'mobx-react-lite'
-import { StickyHeader } from '../UIkit'
+
 import { localizedRoleName } from '../../utils'
 import { IPartner } from '../../store/partnerStore'
 

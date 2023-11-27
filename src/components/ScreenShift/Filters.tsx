@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react' // импорт React
 import store from '../../store' // импорт хранилища
 import { observer } from 'mobx-react-lite' // импорт observer из mobx-react-lite
 import { IShift } from '../../store/shiftsStore' // импорт интерфейса IShift
-import { StickyHeader } from '../UIkit'
+
 import { localizedRoleName } from '../../utils'
 import { IWorkPlaceData } from '../../store/workPlaceStore'
 import { IWorkPlace } from '../../store/workPlaceStore'

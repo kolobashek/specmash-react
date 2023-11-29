@@ -19,18 +19,21 @@ export const users = {
 	getUsers: /* GraphQL */ `
 		query users($input: UsersFilterInput) {
 			users(input: $input) {
-				id
-				phone
-				name
-				nickname
-				comment
-				roles {
+				count
+				rows {
 					id
+					phone
 					name
+					nickname
+					comment
+					roles {
+						id
+						name
+					}
+					createdAt
+					updatedAt
+					deletedAt
 				}
-				createdAt
-				updatedAt
-				deletedAt
 			}
 		}
 	`,

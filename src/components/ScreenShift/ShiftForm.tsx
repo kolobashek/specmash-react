@@ -54,8 +54,8 @@ export const ShiftForm = observer(({ shiftId, error, loading }: Props) => {
 					setFilteredMachines(machinesFromApi)
 				}
 				if (!(driversFromApi instanceof Error)) {
-					setAllDrivers(driversFromApi)
-					setFilteredDrivers(driversFromApi)
+					setAllDrivers(driversFromApi.rows)
+					setFilteredDrivers(driversFromApi.rows)
 				}
 				if (!shiftData.date) {
 					inputChange({ date: localPrkDate.msToDateString(date) })

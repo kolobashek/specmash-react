@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
 import Queries from '../services/api/queries'
 import { graphqlRequest } from '../services/api/graphql'
 import { IPartner } from './partnerStore'
@@ -24,7 +24,9 @@ class WorkPlaceStore {
 			if (workPlaces instanceof Error) {
 				return workPlaces
 			}
-			this.list = workPlaces.workPlaces
+			runInAction(() => {
+				this.list = workPlaces.workPlaces
+			})
 			return workPlaces.workPlaces
 		} catch (error) {
 			return new Error(error as string)
@@ -38,7 +40,9 @@ class WorkPlaceStore {
 			if (workPlace instanceof Error) {
 				return workPlace
 			}
-			this.currentWorkPlace = workPlace.workPlace
+			runInAction(() => {
+				this.currentWorkPlace = workPlace.workPlace
+			})
 			return workPlace.workPlace
 		} catch (error) {
 			return new Error(error as string)

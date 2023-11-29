@@ -1,5 +1,5 @@
 import { workPlaces } from './../services/api/queries/workPlaces'
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
 import Queries from '../services/api/queries'
 import _ from 'lodash'
 import authStore from './authStore'
@@ -150,11 +150,15 @@ class ShiftsStore {
 		try {
 			const shiftIndex = this.shifts.findIndex((s) => s.id === data.id)
 			if (shiftIndex !== -1) {
-				this.shifts[shiftIndex] = { ...this.shifts[shiftIndex], ...data }
+				runInAction(() => {
+					this.shifts[shiftIndex] = { ...this.shifts[shiftIndex], ...data }
+				})
 				const response = (await graphqlRequest(Queries.updateShift, {
 					input: data,
 				})) as UpdateShiftResponse
-				this.shifts[shiftIndex] = response.updateShift
+				runInAction(() => {
+					this.shifts[shiftIndex] = response.updateShift
+				})
 				return response.updateShift
 			}
 			return new Error('Что-то пошло не так')
@@ -196,7 +200,9 @@ class ShiftsStore {
 				console.error(res)
 				return res
 			} else {
-				this.shifts = res.travelLogs
+				runInAction(() => {
+					this.shifts = res.travelLogs
+				})
 				return res.travelLogs
 			}
 		} catch (error) {
@@ -207,7 +213,9 @@ class ShiftsStore {
 		this.tableParams = tableParams
 	}
 	setShiftData = async (shift: Partial<IShift>) => {
-		_.assign(this.shiftData, shift)
+		runInAction(() => {
+			_.assign(this.shiftData, shift)
+		})
 		// WorkPlace.entries(shift).forEach(([key, value]) => {
 		// 	this.shiftData[key as keyof IShift] = value as IShift[typeof key]
 		// })

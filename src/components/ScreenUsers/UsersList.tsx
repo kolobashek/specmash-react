@@ -5,30 +5,30 @@ import { observer } from 'mobx-react-lite'
 import { Avatar, Breadcrumb, FloatButton, List } from 'antd'
 import { PlusCircleOutlined, UserOutlined } from '@ant-design/icons'
 import { useNavigate, Link, Outlet } from 'react-router-dom'
+import { localizedRoleName } from '../../utils'
 
 export const UsersList = observer(() => {
 	document.title = 'Список пользователей'
 	const { users, setHeaderContent } = store
-	const { list, getUsers } = users
+	const { list, getUsers, usersFilter } = users
 	const navigate = useNavigate()
 	useEffect(() => {
 		getUsers()
-		setHeaderContent('search')
+		setHeaderContent('userSearch')
 		return () => {
 			setHeaderContent('default')
 		}
 	}, [])
+	useEffect(() => {
+		if (usersFilter) {
+			console.log(usersFilter.search)
+			getUsers()
+		}
+	}, [usersFilter.search])
 
 	const addUserHandler = async () => {
 		navigate('/users/new')
 	}
-	const memoizedRoleName = React.useMemo(() => {
-		return (role: string | undefined) => {
-			if (role === 'admin') return 'Администратор'
-			if (role === 'manager') return 'Менеджер'
-			return 'Водитель'
-		}
-	}, [])
 	return (
 		<>
 			<Breadcrumb
@@ -77,7 +77,7 @@ export const UsersList = observer(() => {
 									</Link>
 								}
 								description={`Роли: ${user.roles
-									.map((role) => ' ' + memoizedRoleName(role.name))
+									.map((role) => ' ' + localizedRoleName(role.name))
 									.toString()}`}
 							/>
 						</List.Item>

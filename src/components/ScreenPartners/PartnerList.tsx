@@ -34,7 +34,17 @@ export const PartnersList = observer(({ navigation }: any) => {
 	const { list, partnerData, setPartnerData, createPartner, clearPartnerData, getPartners } =
 		store.partners
 	useEffect(() => {
-		getPartners()
+		const start = async () => {
+			try {
+				setLoading(true)
+				await getPartners()
+				setLoading(false)
+			} catch (error) {
+				setLoading(false)
+				console.log(error)
+			}
+		}
+		start()
 	}, [])
 
 	const [visibleAddButton, setVisibleAddButton] = useState(true)
@@ -59,42 +69,7 @@ export const PartnersList = observer(({ navigation }: any) => {
 	const cancelHandler = () => {
 		setVisibleAddButton(true)
 	}
-	const isActiveHandler = () => {
-		setIsActive(!isActive)
-		// setPartnerInput({ isActive: !isActive })
-	}
-	// const memoizedRoleName = React.useMemo(() => {
-	// 	return (role: string | undefined) => {
-	// 		if (role === 'admin') return 'Администратор'
-	// 		if (role === 'manager') return 'Менеджер'
-	// 		return 'Водитель'
-	// 	}
-	// }, [])
-	// const currentDriver = navigation.getState().routes.find((r) => r.name === 'DriversList')
-	// 	?.params?.id
-	// const rolesList = [
-	// 	...roles.map((role, key) => {
-	// 		return {
-	// 			key,
-	// 			title: memoizedRoleName(role),
-	// 			containerStyle: { backgroundColor: 'white' },
-	// 			titleStyle: { color: 'black' },
-	// 			onPress: async () => {
-	// 				setDriverInput({ role })
-	// 				setIsVisibleBS(false)
-	// 			},
-	// 		}
-	// 	}),
-	// 	{
-	// 		title: 'Отмена',
-	// 		containerStyle: { backgroundColor: 'red' },
-	// 		titleStyle: { color: 'white' },
-	// 		onPress: () => {
-	// 			setIsVisibleBS(false)
-	// 			setVisibleAddButton(true)
-	// 		},
-	// 	},
-	// ]
+	if (loading) return <div>Loading...</div>
 	return (
 		<>
 			<List>

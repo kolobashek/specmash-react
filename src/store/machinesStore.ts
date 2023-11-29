@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
 import Queries from '../services/api/queries'
 import authStore from './authStore'
 import { graphqlRequest } from '../services/api/graphql'
@@ -27,7 +27,9 @@ class MachinesStore {
 			if (machines instanceof Error) {
 				return machines
 			}
-			this.machines = machines.equipments
+			runInAction(() => {
+				this.machines = machines.equipments
+			})
 			return machines.equipments
 		} catch (error) {
 			return new Error(error as string)
@@ -40,7 +42,9 @@ class MachinesStore {
 			if (types instanceof Error) {
 				return types
 			}
-			this.types = types.getEquipmentTypes
+			runInAction(() => {
+				this.types = types.getEquipmentTypes
+			})
 			return types.getEquipmentTypes
 		} catch (error) {
 			return new Error(error as string)

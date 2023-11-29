@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
 import Queries from '../services/api/queries'
 import { graphqlRequest } from '../services/api/graphql'
 import { localizedRoleName } from '../utils'
@@ -10,7 +10,7 @@ class UsersStore {
 	} as IUserData
 	roles = [] as IRole[]
 	currentUser: IUser | null = null
-	usersFilter = { limit: 50, offset: 0 } as IUsersFilter
+	usersFilter = { limit: 1000, offset: 0 } as IUsersFilter
 
 	constructor() {
 		makeAutoObservable(this)
@@ -24,11 +24,14 @@ class UsersStore {
 			if (users instanceof Error) {
 				return users
 			}
-			this.list = users.users
+			this.setUsersList(users.users.rows)
 			return users.users
 		} catch (error) {
 			return new Error(error as string)
 		}
+	}
+	setUsersList = (users: IUser[]) => {
+		this.list = users
 	}
 	roleName = (role: string | number | undefined) => {
 		if (!role) return null
@@ -40,7 +43,9 @@ class UsersStore {
 			if (user instanceof Error) {
 				return user
 			}
-			this.currentUser = user.user
+			runInAction(() => {
+				this.currentUser = user.user
+			})
 			return user.user
 		} catch (error) {
 			return new Error(error as string)
@@ -53,7 +58,9 @@ class UsersStore {
 			if (roles instanceof Error) {
 				return roles
 			}
-			this.roles = roles.roles
+			runInAction(() => {
+				this.roles = roles.roles
+			})
 			return roles.roles
 		} catch (error) {
 			return new Error(error as string)
@@ -126,7 +133,7 @@ class UsersStore {
 			if (response instanceof Error) {
 				return response
 			}
-			return response.users
+			return response.users.rows
 		} catch (error) {
 			return new Error(error as string)
 		}
@@ -164,7 +171,10 @@ interface UserResponse {
 	user: IUser
 }
 interface UsersResponse {
-	users: IUser[]
+	users: {
+		count: number
+		rows: IUser[]
+	}
 }
 interface UpdateUserResponse {
 	updateUser: IUser

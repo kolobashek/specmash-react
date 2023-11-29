@@ -10,6 +10,7 @@ Project Description
 
 ### Todo
 
+- [ ] userFilter  
 - [ ] Shift create  
 - [ ] Shift update  
 - [ ] Shift delete  
@@ -36,10 +37,11 @@ Project Description
 
 ### In Progress
 
-- [ ] User create  
+- [ ] users search  
 
 ### For Testing
 
+- [ ] User create  
 - [ ] Roles permissions  
 - [ ] Partner update  
 - [ ] Partner create  

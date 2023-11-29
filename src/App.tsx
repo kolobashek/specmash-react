@@ -8,57 +8,20 @@ import {
 	redirect,
 	useFetcher,
 	LoaderFunctionArgs,
-	useLocation,
-	RouteObject,
 	DataRouteObject,
 } from 'react-router-dom'
-import { Button, Drawer, Radio, Space, Layout, Breadcrumb, Col, Row, Flex } from 'antd'
+import { Button, Drawer, Space, Layout, Col, Row } from 'antd'
 import { MenuOutlined } from '@ant-design/icons'
 import store from './store'
-import {
-	ScreenRegister,
-	ScreenLogin,
-	ScreenShift,
-	ScreenInfo,
-	PartnersList,
-	UsersList,
-	PartnerCard,
-	MachinesList,
-	MachineCard,
-	MachineEdit,
-	MachineNew,
-	ScreenSchedule,
-	PartnerEdit,
-	PartnerNew,
-	UserNew,
-	UserEdit,
-	WorkPlacesList,
-	WorkPlaceEdit,
-	WorkPlaceNew,
-	WorkPlaceCard,
-	UserCard,
-} from './components'
 import { DefaultHeaderContent } from './components/UIkit'
 import _ from 'lodash'
 import { IRouteMap, routerArray } from './services/routes'
 
 const { auth } = store
-const { Header, Footer, Sider, Content } = Layout
-// function isArrayWithLength(arr: Array<any>) {
-// 	return Array.isArray(arr) && arr.length
-// }
-// const getAllowedRoutes = observer(() => {
-// 	const roles = JSON.parse(localStorage.getItem('roles'))
-// 	return routerArray.filter(({ permission }) => {
-// 		if (!permission) return true
-// 		else if (!isArrayWithLength(permission)) return true
-// 		else return intersection(permission, roles).length
-// 	})
-// })
+const { Header, Footer, Content } = Layout
 
 const App = observer(() => {
 	const AppLayout = ({ children }: { children?: React.ReactNode }) => {
-		const { headerContent } = store
 		useEffect(() => {
 			const checkAuth = async () => {
 				await store.auth.getUserByAsyncStorage()
@@ -229,7 +192,6 @@ const App = observer(() => {
 			return data
 		}
 		const result = routerArray.map(traverse)
-		console.log(result)
 		if (Array.isArray(result)) return result
 		else return [result]
 	}
@@ -246,7 +208,7 @@ const App = observer(() => {
 	)
 })
 
-async function loginLoader({ request, params, context }: LoaderFunctionArgs) {
+async function loginLoader({ request }: LoaderFunctionArgs) {
 	if (auth.isAuthenticated) {
 		const params = new URLSearchParams()
 		params.set('from', new URL(request.url).pathname)

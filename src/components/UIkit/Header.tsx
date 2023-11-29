@@ -1,34 +1,36 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import store from '../../store'
 import { Input, Space, Typography, Flex } from 'antd'
+import _ from 'lodash'
 
 const { Text, Link } = Typography
 
 export const DefaultHeaderContent = observer(() => {
 	const { headerContent, users } = store
-	const { usersFilter, setUserFilter, getUsers } = users
+	const { usersFilter, setUserFilter } = users
 	const [searchText, setSearchText] = useState('')
-	let timeout: NodeJS.Timeout
-	const onSearch = (text: string) => {
-		clearTimeout(timeout)
-		setUserFilter({ search: text })
+	useEffect(() => {
+		if (headerContent === 'userSearch') {
+			usersFilter.search && setSearchText(usersFilter.search)
+		}
+	}, [])
+	const debounced = useRef(_.debounce((text) => setUserFilter({ search: text }), 800))
+	const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+		debounced.current.cancel()
+		const text = e.currentTarget.value
 		setSearchText(text)
-
-		timeout = setTimeout(async () => {
-			// выполнить поиск по запросу query
-			await getUsers()
-		}, 500)
+		debounced.current(text)
 	}
 	switch (headerContent) {
-		case 'search':
+		case 'userSearch':
 			return (
 				<Flex align='center' justify='flex-end' style={{ height: '100%' }}>
 					<Input
-						value={searchText || usersFilter.search}
+						value={searchText}
 						placeholder='Начните ввод'
 						allowClear
-						onChange={(e) => onSearch(e.target.value)}
+						onChange={onSearch}
 						style={{ width: 304 }}
 					/>
 				</Flex>

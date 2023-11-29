@@ -1,5 +1,5 @@
 import { IUser } from './usersStore'
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
 import Queries from '../services/api/queries'
 import { graphqlRequest, setAuthTokenHeader } from '../services/api/graphql'
 
@@ -46,7 +46,9 @@ class AuthStore {
 			try {
 				const token = window.localStorage.getItem('token')
 				if (!token) {
-					this.isAuthenticated = false
+					runInAction(() => {
+						this.isAuthenticated = false
+					})
 					return new Error('Токен не найден')
 				} else {
 					setAuthTokenHeader(token)
@@ -73,7 +75,9 @@ class AuthStore {
 				phone,
 				password,
 			})) as Login
-			this.token = login.token
+			runInAction(() => {
+				this.token = login.token
+			})
 			this.setCurrentUser(login.user)
 			this.setIsAuthenticated(true)
 			window.localStorage.setItem('token', login.token)

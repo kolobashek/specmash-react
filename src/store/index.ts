@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, runInAction } from 'mobx'
 import authStore from './authStore'
 import shiftsStore from './shiftsStore'
 import machinesStore from './machinesStore'
@@ -19,7 +19,9 @@ class Store {
 		makeAutoObservable(this)
 	}
 	setHeaderContent = (headerContent: string) => {
-		this.headerContent = headerContent
+		runInAction(() => {
+			this.headerContent = headerContent
+		})
 	}
 }
 

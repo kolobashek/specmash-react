@@ -1,23 +1,15 @@
 import { IUser } from './usersStore'
 import { makeAutoObservable, runInAction } from 'mobx'
-import Queries from '../services/api/queries'
-import { graphqlRequest, setAuthTokenHeader } from '../services/api/graphql'
+import Queries from 'services/api/queries'
+import { graphqlRequest, setAuthTokenHeader } from 'services/api/graphql'
 
-class AuthStore {
+export class AuthStore {
 	isAuthenticated = false
 	registrationMessage = ''
 	token = ''
 	currentUser = {
-		id: 0,
-		phone: '',
-		name: '',
-		roles: [
-			{
-				id: 0,
-				name: '',
-			},
-		],
-	}
+		roles: [{}],
+	} as IUser
 
 	constructor() {
 		makeAutoObservable(this)
@@ -26,6 +18,7 @@ class AuthStore {
 		try {
 			setAuthTokenHeader(token)
 			const request = (await graphqlRequest(Queries.me, {}, { token })) as UserResponse
+
 			const user = request.me
 			if (user) {
 				this.setCurrentUser(user)
@@ -36,7 +29,7 @@ class AuthStore {
 				return new Error('Токен не действителен')
 			}
 		} catch (error) {
-			return new Error(error as string)
+			return new Error('Токен сломался')
 		}
 	}
 	getUserByAsyncStorage = async (): Promise<IUser | Error> => {
@@ -89,6 +82,10 @@ class AuthStore {
 
 	setIsAuthenticated = (authorized: boolean) => {
 		this.isAuthenticated = authorized
+	}
+
+	getIsAuthenticated = () => {
+		return this.isAuthenticated
 	}
 
 	getRegistrationMessage = () => {

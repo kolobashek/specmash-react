@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import store from '../../store'
-import { Input, Space, Typography, Flex } from 'antd'
+import { Input, Space, Typography, Flex, Row, Col, Button } from 'antd'
 import _ from 'lodash'
+import { MenuOutlined } from '@ant-design/icons'
 
-const { Text, Link } = Typography
+const Text = Typography.Text
 
-export const DefaultHeaderContent = observer(() => {
+const DefaultHeaderContent = observer(() => {
 	const { headerContent, users } = store
 	const { usersFilter, setUserFilter } = users
 	const [searchText, setSearchText] = useState('')
@@ -43,4 +44,20 @@ export const DefaultHeaderContent = observer(() => {
 				</Space>
 			)
 	}
+})
+
+export const HeaderContent = observer(() => {
+	const { showDrawer } = store.uiStore
+	return (
+		<Row>
+			<Col span={2}>
+				<Button type='text' size='large' onClick={showDrawer}>
+					<MenuOutlined style={{ color: 'white' }} />
+				</Button>
+			</Col>
+			<Col span={22}>
+				<DefaultHeaderContent />
+			</Col>
+		</Row>
+	)
 })

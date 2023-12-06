@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		"baseUrl": "src",
 		"target": "esnext",
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
@@ -11,7 +12,7 @@
 		"noFallthroughCasesInSwitch": true,
 		"module": "esnext",
 		"moduleResolution": "node",
-		"types": ["node", "jest"],
+		"types": ["jest", "node", "react", "react-dom"],
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"noEmit": true,

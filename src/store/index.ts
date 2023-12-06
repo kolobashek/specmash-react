@@ -5,6 +5,7 @@ import machinesStore from './machinesStore'
 import usersStore from './usersStore'
 import partnerStore from './partnerStore'
 import workPlaceStore from './workPlaceStore'
+import UIStore from './UIStore'
 
 class Store {
 	auth = authStore
@@ -13,6 +14,7 @@ class Store {
 	users = usersStore
 	partners = partnerStore
 	workPlaces = workPlaceStore
+	uiStore = UIStore
 	headerContent = ''
 
 	constructor() {

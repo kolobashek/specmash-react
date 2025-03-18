@@ -1,10 +1,16 @@
+// import { GraphQLClient } from 'graphql-request'
+// import { RequestDocument } from 'graphql-request/dist/types'
+
 import { GraphQLClient } from 'graphql-request'
-import { GraphQLError, GraphQLResponse } from 'graphql-request/build/esm/types'
+import {
+	GraphQLError,
+	// GraphQLResponse
+} from 'graphql'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000'
 const url = API_URL + '/graphql'
 
-const client = new GraphQLClient(url)
+const client = new GraphQLClient(import.meta.env.VITE_GRAPHQL_URL)
 export const setAuthTokenHeader = (token: string) => {
 	client.setHeader('Authorization', `Bearer ${token}`)
 }

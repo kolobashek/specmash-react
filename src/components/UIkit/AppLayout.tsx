@@ -10,6 +10,7 @@ import { LocationDisplay } from '../../services/routes'
 const { Header, Footer, Content } = Layout
 
 export const AppLayout = observer(({ children }: { children?: React.ReactNode }) => {
+	// export const AppLayout = observer(() => {
 	useEffect(() => {
 		const checkAuth = async () => {
 			await store.auth.getUserByAsyncStorage()
@@ -17,22 +18,20 @@ export const AppLayout = observer(({ children }: { children?: React.ReactNode })
 		checkAuth()
 	}, [])
 	return (
-		<>
+		<Layout>
+			<Header style={headerStyle}>
+				<HeaderContent />
+			</Header>
 			<Layout>
-				<Header style={headerStyle}>
-					<HeaderContent />
-				</Header>
-				<Layout>
-					<Content style={contentStyle}>
-						{children}
-						<Outlet />
-					</Content>
-				</Layout>
-				<Footer style={footerStyle}>Footer</Footer>
+				<Content style={contentStyle}>
+					{children}
+					<Outlet />
+				</Content>
 			</Layout>
+			<Footer style={footerStyle}>Footer</Footer>
 			<AppDrawer />
 			<LocationDisplay />
-		</>
+		</Layout>
 	)
 })
 

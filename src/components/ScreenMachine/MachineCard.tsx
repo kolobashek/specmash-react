@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import store from '../../store'
 import { observer } from 'mobx-react-lite'
-import { localizedRoleName } from '../../utils'
-import { IMachine } from '../../store/machinesStore'
+import { localizedRoleName } from 'utils'
 import { MachineForm } from './MachineForm'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Card, Divider, FloatButton, List, Typography } from 'antd'
+import { PDFViewer } from '@react-pdf/renderer'
+import { Button, Card, Divider, FloatButton, List, Typography, Modal } from 'antd'
 import Title from 'antd/es/typography/Title'
+import store from 'store'
+import { IMachine } from 'store/machinesStore'
+import { PrintForm } from './PrintForm'
 
 export const MachineCard = observer(() => {
 	const {
@@ -38,6 +40,7 @@ export const MachineCard = observer(() => {
 		machine()
 	}, [])
 
+	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [visibleEditButton, setVisibleEditButton] = useState(true)
 	const [loading, setLoading] = useState(false)
 	const [isVisibleBS, setIsVisibleBS] = useState(false)
@@ -64,6 +67,18 @@ export const MachineCard = observer(() => {
 		// clearMachineData()
 		return updatedMachine
 	}
+	const printHandler = () => {
+		// print logic
+		console.log('Printing machine details...')
+		setIsModalOpen(true)
+	}
+	const handleOk = () => {
+		setIsModalOpen(false)
+	}
+
+	const handleCancel = () => {
+		setIsModalOpen(false)
+	}
 	// const isActiveHandler = () => {
 	// 	setIsActive(!isActive)
 	// 	setMachineData({ isActive: !isActive })
@@ -76,6 +91,9 @@ export const MachineCard = observer(() => {
 		<>
 			<Card>
 				<Title>{`${name}` + (nickname ? `, ${nickname}` : '')}</Title>
+				<Button loading={loading} onClick={printHandler}>
+					Печать
+				</Button>
 				<Divider />
 				<div>
 					<List.Item>
@@ -99,6 +117,27 @@ export const MachineCard = observer(() => {
 				// icon={{ name: 'edit', color: 'white' }}
 				// color='green'
 			/>
+			<Modal
+				title='Basic Modal'
+				open={isModalOpen}
+				onOk={handleOk}
+				onCancel={handleCancel}
+				okText='Печать'
+				cancelText='Отмена'
+				width={'100%'}
+				styles={{
+					body: {
+						minHeight: '60vh',
+						position: 'relative',
+						display: 'flex',
+						flexDirection: 'column',
+					},
+				}}
+			>
+				<PDFViewer width={'100%'} showToolbar={true} style={{ flex: 1, height: '100%' }}>
+					<PrintForm />
+				</PDFViewer>
+			</Modal>
 		</>
 	)
 })

@@ -1,6 +1,6 @@
 import { shifts } from './shifts'
 import { machines } from './machines'
-import { APIError } from 'graphql-hooks'
+// import { APIError } from 'graphql-hooks'
 import { users } from './users'
 import { workPlaces } from './workPlaces'
 import { partners } from './partners'
@@ -15,23 +15,23 @@ const Queries = {
 	...shifts,
 }
 
-export function handleApiError(error: APIErrors) {
+export function handleApiError(error: any) {
 	let message = ''
-	if (error.fetchError) {
-		// Обработка ошибки fetch
-		// console.log(error.fetchError)
-		message = message.concat(error.fetchError.message)
-	}
+	// if (error.fetchError) {
+	// 	// Обработка ошибки fetch
+	// 	// console.log(error.fetchError)
+	// 	message = message.concat(error.fetchError.message)
+	// }
 
-	if (error.httpError) {
-		// Обработка HTTP ошибки
-		// console.log(error.httpError.status)
-		message = message.concat(error.httpError.statusText)
-	}
+	// if (error.httpError) {
+	// 	// Обработка HTTP ошибки
+	// 	// console.log(error.httpError.status)
+	// 	message = message.concat(error.httpError.statusText)
+	// }
 
 	if (error.graphQLErrors) {
 		// Обработка ошибок GraphQL
-		error.graphQLErrors.forEach((graphQLError) => {
+		error.graphQLErrors.forEach((graphQLError: any) => {
 			// console.log('handleApiError', graphQLError.message)
 			message = message.concat(graphQLError.message)
 		})
@@ -40,9 +40,9 @@ export function handleApiError(error: APIErrors) {
 	return message
 }
 
-export interface APIErrors extends APIError {
-	graphQLErrors?: GraphQLError[]
-}
+// export interface APIErrors extends APIError {
+// 	graphQLErrors?: GraphQLError[]
+// }
 
 interface GraphQLError {
 	message: string

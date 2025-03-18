@@ -9,7 +9,8 @@ import { localizedRoleName } from '../../utils'
 
 export const UsersList = observer(() => {
 	document.title = 'Список пользователей'
-	const { users, setHeaderContent } = store
+	const { users, uiStore } = store
+	const { setHeaderContent } = uiStore
 	const { list, getUsers, usersFilter } = users
 	const navigate = useNavigate()
 	useEffect(() => {

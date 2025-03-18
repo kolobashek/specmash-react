@@ -15,15 +15,9 @@ class Store {
 	partners = partnerStore
 	workPlaces = workPlaceStore
 	uiStore = UIStore
-	headerContent = ''
 
 	constructor() {
 		makeAutoObservable(this)
-	}
-	setHeaderContent = (headerContent: string) => {
-		runInAction(() => {
-			this.headerContent = headerContent
-		})
 	}
 }
 

@@ -3,6 +3,8 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom'
+import React from 'react'
+;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 global.matchMedia = jest.fn().mockImplementation((query) => ({
 	matches: false,
@@ -64,7 +66,7 @@ jest.mock('react-router-dom', () => {
 
 		useNavigate: jest.fn(),
 		useParams: jest.fn(),
-		useLocation: jest.fn(),
+		// useLocation: jest.fn(),
 
 		// другие хуки которые используются в проекте
 	}
@@ -110,3 +112,41 @@ jest.mock('node-fetch', () => {
 // 		// },
 // 	}
 // })
+jest.mock('antd', () => {
+	const antd = jest.requireActual('antd')
+
+	const Layout = ({ children = '' }: MyComponentProps) => {
+		return <div>{children}</div>
+	}
+
+	Layout.displayName = 'Layout'
+
+	const Header = ({ children = '' }: MyComponentProps) => {
+		return <div>{children}</div>
+	}
+
+	Header.displayName = 'Header'
+
+	const Content = ({ children = '' }: MyComponentProps) => {
+		return <div>{children}</div>
+	}
+
+	Content.displayName = 'Content'
+
+	const Footer = ({ children = '' }: MyComponentProps) => {
+		return <div>{children}</div>
+	}
+
+	Footer.displayName = 'Footer'
+	Layout.Header = Header
+	Layout.Content = Content
+	Layout.Footer = Footer
+
+	return {
+		...antd,
+		Layout,
+	}
+})
+interface MyComponentProps {
+	children?: React.ReactNode
+}

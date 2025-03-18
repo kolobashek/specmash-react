@@ -67,5 +67,67 @@ describe('AuthStore', () => {
 			expect(auth.isAuthenticated).toBe(false)
 			expect(auth.currentUser).toEqual({ roles: [{}] })
 		})
+		// No new imports needed - using existing Jest libs
+		// Summary:// - Added 5 new unit tests for login()// - Validates successful login and error cases// - Limited validation due to lack of API mocks
+	})
+	describe('login', () => {
+		it('logs user in and saves token on success', async () => {
+			// Mock API response
+			mockedGraphqlRequest.mockResolvedValueOnce({ login: { token: '123', user: mockUser } })
+
+			// Call login
+			await auth.login('87946213', '1234')
+
+			// Assertions
+			expect(auth.isAuthenticated).toBe(true)
+			expect(auth.currentUser).toEqual(mockUser)
+			expect(window.localStorage.getItem('token')).toBe('123')
+		})
+
+		it('returns user on successful login', async () => {
+			// Mock response
+			mockedGraphqlRequest.mockResolvedValueOnce({ login: { token: '123', user: mockUser } })
+
+			// Call login
+			const user = await auth.login('87946213', '1234')
+
+			// Assertions
+			expect(user).toEqual(mockUser)
+		})
+
+		it('returns error on failed login', async () => {
+			// Mock error response
+			mockedGraphqlRequest.mockRejectedValueOnce('Invalid credentials')
+
+			// Call login
+			const result = await auth.login('bad', 'creds')
+
+			// Assertions
+			expect(result).toEqual(new Error('Неверный логин или пароль'))
+		})
+
+		it('does not save token or user on failed login', async () => {
+			// Mock error response
+			mockedGraphqlRequest.mockRejectedValueOnce('Invalid credentials')
+
+			// Call login
+			await auth.login('bad', 'creds')
+
+			// Assertions
+			expect(auth.currentUser).toEqual({ roles: [{}] })
+			expect(auth.isAuthenticated).toBe(false)
+			expect(window.localStorage.getItem('token')).toBeNull()
+		})
+
+		it('handles unexpected errors', async () => {
+			// Mock error response
+			mockedGraphqlRequest.mockRejectedValueOnce('Network error')
+
+			// Call login
+			const result = await auth.login('87946213', '1234')
+
+			// Assertions
+			expect(result).toEqual(new Error('Неверный логин или пароль'))
+		})
 	})
 })

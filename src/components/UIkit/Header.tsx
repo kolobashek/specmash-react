@@ -8,7 +8,8 @@ import { MenuOutlined } from '@ant-design/icons'
 const Text = Typography.Text
 
 const DefaultHeaderContent = observer(() => {
-	const { headerContent, users } = store
+	const { users, uiStore } = store
+	const { headerContent } = uiStore
 	const { usersFilter, setUserFilter } = users
 	const [searchText, setSearchText] = useState('')
 	useEffect(() => {

@@ -34,6 +34,7 @@ export const LocationDisplay = () => {
 	if (location) {
 		return <div data-testid='location-display'>{location.pathname}</div>
 	}
+	return <></>
 }
 
 export const routesConfig: RouteObject[] = [

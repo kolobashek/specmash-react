@@ -59,7 +59,7 @@ class MachinesStore {
 				return machine
 			}
 			// this.currentMachine = machine.equipment
-			console.log(machine)
+			// console.log(machine)
 			return machine.equipment
 		} catch (error) {
 			return new Error(error as string)

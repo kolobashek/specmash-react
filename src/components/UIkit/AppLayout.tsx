@@ -24,13 +24,13 @@ export const AppLayout = observer(({ children }: { children?: React.ReactNode })
 			</Header>
 			<Layout>
 				<Content style={contentStyle}>
+					{/* <LocationDisplay /> */}
 					{children}
 					<Outlet />
 				</Content>
 			</Layout>
 			<Footer style={footerStyle}>Footer</Footer>
 			<AppDrawer />
-			<LocationDisplay />
 		</Layout>
 	)
 })

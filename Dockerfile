@@ -1,13 +1,25 @@
-FROM node:current-alpine
+# Этап сборки
+FROM node:18-alpine AS build
 
 WORKDIR /app
 
-COPY *yarn.lock package*.json ./
-RUN yarn install
+COPY package.json yarn.lock ./
+COPY packages/specmash-react/package.json ./packages/specmash-react/
 
-COPY . .
+RUN yarn install --frozen-lockfile
 
-RUN yarn
+COPY packages/specmash-react/ ./packages/specmash-react/
 
-EXPOSE 3000
-CMD ["yarn", "dev", "--host", "0.0.0.0"]
+WORKDIR /app/packages/specmash-react
+
+RUN yarn build
+
+# Этап продакшн
+FROM nginx:alpine
+
+COPY --from=build /app/packages/specmash-react/build /usr/share/nginx/html
+COPY packages/specmash-react/nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

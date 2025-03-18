@@ -89,6 +89,7 @@ export const MachineForm = observer(() => {
 						value={machineData.name}
 						onChange={(e) => inputChange({ name: e.target.value })}
 						disabled={loading}
+						required
 					/>
 				</Form.Item>
 				{/* <Form.Item label='Телефон:'>
